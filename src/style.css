@@ -1,0 +1,13 @@
+/* ./src/style.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html[data-theme='default']{
+        --color-primary: 102 , 255 , 51;
+        --color-secondary: 49 , 87 , 44;
+        --color-error: 255 , 99 , 79;
+        --color-bg: 15 , 23 , 42;
+    }
+}
