@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="bg-custom-bg h-screen text-white flex flex-col items-center">
+  <div class="bg-backgroundColor h-screen text-textColor flex flex-col items-center">
     <Header/>
     <router-view></router-view>
   </div> 

@@ -4,10 +4,11 @@ export default {
   theme: {
     extend: {
       colors:{
-        "primary":"rgb(var(--color-primary) )",
-        "secondary":"rgb(var(--color-secondary) )",
-        "error":"rgb(var(--color-error) )",
-        "custom-bg":"rgb(var(--color-bg) )",
+        "primary":"var(--color-primary)",
+        "secondary":"var(--color-secondary)",
+        "error":"var(--color-error)",
+        "backgroundColor":"var(--color-bg)",
+        "textColor":"var(--color-text)",
       }
     },
   },

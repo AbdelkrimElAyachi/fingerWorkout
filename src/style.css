@@ -4,10 +4,18 @@
 @tailwind utilities;
 
 @layer base {
-    html[data-theme='default']{
-        --color-primary: 102 , 255 , 51;
-        --color-secondary: 49 , 87 , 44;
-        --color-error: 255 , 99 , 79;
-        --color-bg: 15 , 23 , 42;
+    body[data-theme='default']{
+        --color-bg: #0F172A;
+        --color-text: #fff;
+        --color-primary: #66FF33;
+        --color-secondary: #31572C;
+        --color-error: #FF4F63;
+    }
+    body[data-theme='light']{
+        --color-bg: #ffffff;
+        --color-text: #000;
+        --color-primary: #3d85fe;
+        --color-secondary: #d4d4d4;
+        --color-error: #ff3333;
     }
 }
