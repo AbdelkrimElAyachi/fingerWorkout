@@ -11,16 +11,6 @@
                     </button>
                 </div>
 
-            <!--
-                Dropdown menu, show/hide based on menu state.
-
-                Entering: "transition ease-out duration-100"
-                From: "transform opacity-0 scale-95"
-                To: "transform opacity-100 scale-100"
-                Leaving: "transition ease-in duration-75"
-                From: "transform opacity-100 scale-100"
-                To: "transform opacity-0 scale-95"
-            -->
                 <div v-if="dropDownOpen" class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-backgroundColor shadow-lg ring-1 ring-secondary ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-1" role="none">
                     <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
@@ -49,7 +39,7 @@
             </div>
         </div>
         <nav class="w-1/3">
-            <ul class="flex justify-between w-5/6 font-bold">
+            <ul class="flex justify-between w-6/6 font-bold">
                 <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/">
                     <span class="link_text " >Home</span>
                 </RouterLink></li>
@@ -69,7 +59,7 @@
         data() {
             return {
                 dropDownOpen:false,
-                currentTheme:""
+                currentTheme:"default"
             };
         },
         created(){
