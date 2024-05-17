@@ -24,7 +24,7 @@ export default {
             charIndex : 0,
             start:false,
             finish:false,
-            time:6,
+            time:60,
             html : "",
             // css classes , we will use them to generate our html 
             wordClasses : [],
@@ -140,7 +140,7 @@ export default {
             this.phraseIndex = 0;
             this.wordIndex = 0;
             this.charIndex = 0;
-            this.time = 6;
+            this.time = 60;
             this.finish = false;
             this.generate();
             this.render();
