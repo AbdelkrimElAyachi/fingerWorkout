@@ -1,3 +1,7 @@
+<script setup>
+    import Popup from "./Popup.vue";
+</script>
+
 <template>
     <div class="mt-16 text-secondary">
         <p class="text-primary text-center text-2xl">{{time}}s</p>
@@ -7,10 +11,14 @@
         <div class="flex gap-2 mt-5 justify-center">
             <button @click="restart" class="text-primary border-2 px-4 border-primary hover:text-white hover:bg-primary">restart</button>
         </div>
+        <div v-if="showResults">
+            <Popup :result=results @close-results="closeResults" />
+        </div>
     </div>
 </template>
-<script>
 
+
+<script>
 import getPhrases from "../utils/phrases.js";
 
 export default {
@@ -24,8 +32,9 @@ export default {
             charIndex : 0,
             start:false,
             finish:false,
-            time:60,
+            time:6,
             html : "",
+            showResults : false,
             // css classes , we will use them to generate our html 
             wordClasses : [],
             charClasses : [],
@@ -54,12 +63,26 @@ export default {
     methods: {
         // handling events
         secondPassed(){
+            // lol variable to track if this.finish changes later on
+            let lol = false;
+            if(!this.finish){
+                lol = true;
+            }
             if(this.time <= 0){
                 this.finish = true;
             }
-            if(this.start && !this.finish) this.time--;
-        },
+            if(this.start && !this.finish){
+                this.time--;
+            }
+            // now we are sure using lol that this.finish was false and become true then this means the test finished in this second
+            if(lol && this.finish){
+                this.showResults = true;
+            }
 
+        },
+        closeResults() {
+            this.showResults = false;
+        },
         // generating methods
         async generatePhrases(){
             return await getPhrases("hard",8,"dog")
@@ -113,6 +136,9 @@ export default {
             }
             // handling space key
             if(e.key == " ") {
+                if(! ( this.text[this.wordIndex].length == this.charIndex ) ){
+                    this.wordClasses[this.wordIndex] = "border-b-4 border-error";
+                }
                 this.spaceClicked();
             } 
             // ignoring any other keys except english letters and numbers , we can add other languages in the future
