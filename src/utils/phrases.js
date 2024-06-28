@@ -1,6 +1,6 @@
 
 // Function to shuffle an array using Fisher-Yates shuffle algorithm
-function shuffleArray(array) {
+export function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -9,7 +9,7 @@ function shuffleArray(array) {
 }
 
 
-export default async function getPhrases(difficulty, qunatity, title) {
+export async function getPhrases( qunatity, title) {
 
     const res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=${qunatity}&exlimit=1&titles=${title}&explaintext=1&format=json&formatversion=2&origin=*`)
     const data = await res.json();

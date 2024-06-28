@@ -9,7 +9,7 @@
         <p>wrong characters : {{results.wrongCharacters}}  correct characters : {{results.correctCharacters}}</p>
         <p>wrong words : {{results.wrongWords}}  correct words : {{results.correctWords}}</p>
         <div class="flex gap-2 mt-5 justify-center">
-            <button @click="restart" class="text-primary border-2 px-4 border-primary hover:text-white hover:bg-primary">restart</button>
+            <button @click="restart" class="text-primary border-2 px-4 py-1  border-primary hover:text-white hover:bg-primary">restart</button>
         </div>
         <div v-if="showResults">
             <Popup :result=results @close-results="closeResults" />
@@ -19,20 +19,31 @@
 
 
 <script>
-import getPhrases from "../utils/phrases.js";
+import {getPhrases,shuffleArray} from "../utils/phrases.js";
 
 export default {
+    props: {
+        Duration:{
+            type: Number,
+            required:true
+        },
+        items:{
+            type: Array,
+            required:true
+        }
+    },
     data() {
         return {
+            // customization attributes
             // when we will store our 
             phrases : [],
             text : [],
+            time : 0,
             phraseIndex : 0,
             wordIndex : 0,
             charIndex : 0,
             start:false,
             finish:false,
-            time:6,
             html : "",
             showResults : false,
             // css classes , we will use them to generate our html 
@@ -53,6 +64,7 @@ export default {
         setInterval(() => {
             this.secondPassed();
         }, 1000);
+        this.time = this.Duration * 60;
         document.addEventListener("keydown",this.buttonClicked);
         this.phrases = await this.generatePhrases();
         this.generate();
@@ -61,7 +73,30 @@ export default {
 
 
     methods: {
-        // handling events
+        async generatePhrases(){
+            let words = this.items;
+            shuffleArray(words);
+            return await getPhrases(8,words[0]);
+        },
+        generate(){
+            this.text = this.phrases[this.phraseIndex].split(" ").map((word)=>word.split(""));
+            this.wordClasses = this.text.map((word)=>"");
+            this.wordClasses[0] = "border-b-4 border-primary";
+            this.charClasses = this.text.map((word)=>word.map((char)=>"text-secondary"));
+        },
+        generateHtml(){
+            this.html = this.text.map((word,index)=>{
+                let characters = word.map((char,ind)=>{
+                    return `<span class="${this.charClasses[index][ind]}">${char}</span>`;
+                }).join("");
+                return `<span class="${this.wordClasses[index]}">${characters}</span>`;
+            }).join(" ");
+        },
+        render(){
+            // console.log("rendering text");
+            this.generateHtml();
+            this.$refs.phrase.innerHTML = this.html;
+        },
         secondPassed(){
             // lol variable to track if this.finish changes later on
             let lol = false;
@@ -83,28 +118,8 @@ export default {
         closeResults() {
             this.showResults = false;
         },
-        // generating methods
-        async generatePhrases(){
-            return await getPhrases("hard",8,"dog")
-        },
-        generate(){
-            this.text = this.phrases[this.phraseIndex].split(" ").map((word)=>word.split(""));
-            this.wordClasses = this.text.map((word)=>"");
-            this.wordClasses[0] = "border-b-4 border-primary";
-            this.charClasses = this.text.map((word)=>word.map((char)=>"text-secondary"));
-        },
-        generateHtml(){
-            this.html = this.text.map((word,index)=>{
-                let characters = word.map((char,ind)=>{
-                    return `<span class="${this.charClasses[index][ind]}">${char}</span>`;
-                }).join("");
-                return `<span class="${this.wordClasses[index]}">${characters}</span>`;
-            }).join(" ");
-        },
-
-
-        // handling actions methods
         spaceClicked(){
+            console.log(this.wordIndex);
             this.charIndex = 0;
             this.wordIndex++;
             if(this.wordClasses[this.wordIndex - 1] != "border-b-4 border-error"){
@@ -161,8 +176,8 @@ export default {
             this.charIndex++;
             this.render();
         },
-        restart(){
-            console.log("restart");
+        restart(e){
+            e.target.blur();
             this.phraseIndex = 0;
             this.wordIndex = 0;
             this.charIndex = 0;
@@ -182,13 +197,6 @@ export default {
         },
         isLineEnding(){
             return (this.wordIndex >= this.text.length);
-        },
-
-        // rendering the text 
-        render(){
-            // console.log("rendering text");
-            this.generateHtml();
-            this.$refs.phrase.innerHTML = this.html;
         },
 
     }
