@@ -4,19 +4,19 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo "hello jenkins"
+                npm install
             }
         }
 
         stage('Test') {
             steps {
-                echo "test jenkins"
+                echo "testing"
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "deploy jenkins"
+                npm run dev
             }
         }
     }
