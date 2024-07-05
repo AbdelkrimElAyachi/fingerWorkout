@@ -4,19 +4,19 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Perform the build steps
+                echo "hello jenkins"
             }
         }
 
         stage('Test') {
             steps {
-                // Perform the testing steps
+                echo "test jenkins"
             }
         }
 
         stage('Deploy') {
             steps {
-                // Perform the deployment steps
+                echo "deploy jenkins"
             }
         }
     }
