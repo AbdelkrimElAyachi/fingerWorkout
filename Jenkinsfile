@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                npm install
+                sh'npm install'
             }
         }
 
@@ -16,7 +16,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                npm run dev
+                sh'npm run dev'
             }
         }
     }
