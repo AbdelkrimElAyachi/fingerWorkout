@@ -9,6 +9,7 @@ pipeline {
 
         stage('dependencies'){
             steps {
+                sh'npm install -g vercel' 
                 sh'npm install'
             }
         }
