@@ -37,12 +37,12 @@ pipeline {
 
             }
         }
-
-        post {
-            failure {
-                echo "Vercel deployment failed."
-                // Add additional steps to handle failed deployment
-            }
+    }
+    
+    post {
+        failure {
+            echo "Vercel deployment failed."
+            // Add additional steps to handle failed deployment
         }
     }
 }
