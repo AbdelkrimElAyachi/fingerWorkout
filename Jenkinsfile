@@ -28,10 +28,10 @@ pipeline {
     
     post {
         success {
-            withCredentials([string(credentialsId: '61f4492b-127f-45c8-92cd-aab3234adff6', variable: 'VERCEL_TOKEN')]) {
-                sh 'vercel --token=$VERCEL_TOKEN --prod --pre-built'
-                echo 'deploying succefully to vercel'
-            }
+                withCredentials([usernamePassword(credentialsId: '61f4492b-127f-45c8-92cd-aab3234adff6', usernameVariable: 'TOKEN_NAME', passwordVariable: 'VERCEL_TOKEN')]) {
+                    sh 'vercel --token=$VERCEL_TOKEN --prod --pre-built'
+                    echo 'Deploying successfully to Vercel'
+                }
         }
         failure {
             echo "Vercel deployment failed."
