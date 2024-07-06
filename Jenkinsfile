@@ -20,7 +20,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh'npm run dev'
+                echo "you did it"
             }
         }
     }
