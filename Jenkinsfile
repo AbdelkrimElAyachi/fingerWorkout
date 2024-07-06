@@ -31,8 +31,7 @@ pipeline {
         success {
                 withCredentials([usernamePassword(credentialsId: '61f4492b-127f-45c8-92cd-aab3234adff6', usernameVariable: 'TOKEN_NAME', passwordVariable: 'VERCEL_TOKEN')]) {
                     sh 'vercel --token $VERCEL_TOKEN '
-                    sh 'vercel build --yes'
-                    sh 'vercel deploy --prebuilt'
+                    sh 'vercel'
                     echo 'Deploying successfully to Vercel'
                 }
         }
