@@ -9,8 +9,17 @@ pipeline {
 
         stage('dependencies'){
             steps {
+                dir('../selenese'){
+                    sh'apt update'
+                    sh'apt install maven'
+                    sh'apt-get install chromium-chromedriver'
+                    sh'git clone https://github.com/vmi/selenese-runner-java.git ../selenium'
+                    sh'mvn -P package'
+                    sh'mv ./target/selenese-runner.jar ../fingerworkout'
+                }
                 sh'npm install -g vercel' 
                 sh'npm install'
+                sh'npm install -g live-server'
             }
         }
         stage('Build') {
@@ -22,6 +31,10 @@ pipeline {
         stage('Test') {
             steps {
                 echo "testing"
+                sh'live-server  ./dist/index.html --port:50999 &'
+                sh'LIVE_SERVER_PID=$!'
+                sh'java -jar selenese-runner.jar --driver chrome --baseurl http://127.0.0.1:9999 ./scripts/first.side'
+                sh'KILL $LIVE_SERVER_PID'
             }
         }
 
