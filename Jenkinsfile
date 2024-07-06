@@ -29,7 +29,7 @@ pipeline {
                 script {
                     if (currentBuild.result == 'SUCCESS') { 
                         withCredentials([string(credentialsId: '61f4492b-127f-45c8-92cd-aab3234adff6', variable: 'VERCEL_TOKEN')]) {
-                            sh 'vercel --token=$VERCEL_TOKEN --prod'
+                            sh 'vercel --token=$VERCEL_TOKEN --prod --pre-built'
                             echo 'desploying succefully to vercel'
                         }
                     }
