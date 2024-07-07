@@ -33,7 +33,7 @@ pipeline {
                 echo "testing"
                 sh'live-server  ./dist/index.html --port:50999 &'
                 sh'LIVE_SERVER_PID=$!'
-                sh'java -jar selenese-runner.jar --driver chrome --baseurl http://127.0.0.1:9999 ./scripts/first.side'
+                sh'java -jar selenese-runner.jar --driver chrome --baseurl http://127.0.0.1:50999 --screenshot-on-fail /errors-screenshots ./scripts/first.side'
                 sh'KILL $LIVE_SERVER_PID'
             }
         }
