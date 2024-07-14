@@ -1,10 +1,22 @@
-<script setup>
-  import Header from "./components/Header.vue"
-</script>
 
+
+<script setup>
+    import Header from "./components/Header.vue";
+</script>
 <template>
-  <div class="bg-backgroundColor h-screen text-textColor flex flex-col items-center">
+  <div class="bg-backgroundColor h-screen text-textColor">
     <Header/>
-    <router-view></router-view>
+    <router-view  />
   </div> 
 </template>
+<script>
+export default {
+    name: "App",
+    components:{
+        Header,
+    },
+    data(){
+      return {};
+    }
+}
+</script>

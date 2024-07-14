@@ -1,5 +1,5 @@
 <template>
-    <header class="flex justify-between w-5/6 p-10 text-2xl">
+    <header class="flex justify-between w-5/6 p-10 text-2xl mx-auto">
         <div  class="menu" >
             <div class="relative inline-block text-left">
                 <div :onclick="handleDropDown">
@@ -43,8 +43,8 @@
                 <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/">
                     <span class="link_text " >Home</span>
                 </RouterLink></li>
-                <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/about">
-                    <span class="link_text" >About</span>
+                <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/training">
+                    <span class="link_text" >Training</span>
                 </RouterLink></li>
                 <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/contribute">
                     <span class="link_text" >Contribute</span>
