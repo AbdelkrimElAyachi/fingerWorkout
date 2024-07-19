@@ -4,7 +4,7 @@
     import Header from "./components/Header.vue";
 </script>
 <template>
-  <div class="bg-backgroundColor h-screen text-textColor">
+  <div class="bg-backgroundColor min-h-screen text-textColor">
     <Header/>
     <router-view  />
   </div> 
