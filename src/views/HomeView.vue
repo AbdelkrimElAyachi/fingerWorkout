@@ -1,11 +1,17 @@
 <script setup>
+    import Header from "../components/Header.vue";
+    import Footer from "../components/Footer.vue";
     import Test from "../components/Test.vue";
     import Keyboard from "../components/keyboard.vue";
 </script>
 <template>
+  <main class="bg-backgroundColor min-h-screen text-textColor">
+    <Header/>
     <div class="mt-16">
         <Test ref="test" :duration="1" :items="['dog','cat','algorithm','science']"/> 
     </div>
+    <Footer/>
+  </main> 
 </template>
 
 <script>
@@ -14,19 +20,6 @@ export default {
     components: {
         Test,
         Keyboard,
-    },
-    unmounted() {
-        console.log('HomeView unmounted');
-        // Perform any necessary cleanup or state preservation here
-    },
-    beforeDestroy() {
-        console.log("homeview beforeDestroy");
-    },
-    beforeLeaveRoute() {
-        console.log("homeview beforeLeaveRoute");
-    },
-    data() {
-    // Your data properties
     },
 };
 </script>

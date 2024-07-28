@@ -1,5 +1,5 @@
 <template>
-    <div ref="keyboard" class="keyboard">
+    <div ref="keyboard" class="keyboard bg-bg">
     </div>
 </template>
 
@@ -47,11 +47,11 @@ export default {
             let html = this.rows.map((row)=>{
                 let rowHTML = row.map((key) => {
                     if(key == "space"){
-                        return `<div class="keyword space ${keyClicked==' ' ?  true_or_false ? '!bg-primary' : '!bg-error' : ''}" >space</div>`
+                        return `<div class="keyword space bg-key ${keyClicked==' ' ?  true_or_false ? '!bg-primary' : '!bg-error' : ''}" >space</div>`
                     }
-                    return `<div class="keyword ${key==keyClicked.toLowerCase() ? true_or_false ? '!bg-primary' : '!bg-error' : '' }" >${ key }</div>`
+                    return `<div class="keyword bg-key ${key==keyClicked.toLowerCase() ? true_or_false ? '!bg-primary' : '!bg-error' : '' }" >${ key }</div>`
                 }).join("");
-                return `<div class="row">${rowHTML}</div>`;
+                return `<div class="row bg-bg">${rowHTML}</div>`;
             }).join("");
             this.$refs.keyboard.innerHTML = html;
 
@@ -59,9 +59,6 @@ export default {
 
         off(duration=3){
             setTimeout(()=>{
-                if(this.timeout){
-                    this.render();
-                }
             },duration * 1000);
         }
     }
@@ -75,11 +72,10 @@ export default {
 .keyboard .row {
     padding:5px;
     width:fit-content;
-    background:#000;
     margin-inline:auto;
-    margin-top:10px;
+    margin-top:5px;
     display:flex;
-    gap:15px;
+    gap:10px;
 }
 
 .keyboard .row .keyword {
@@ -88,7 +84,6 @@ export default {
     display:flex;
     justify-content:center;
     align-items:center;
-    background:#222;
     border-top: 2px solid #444;
     border-left: 1px solid #444;
 }

@@ -13,7 +13,6 @@
 
                 <div v-if="dropDownOpen" class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-backgroundColor shadow-lg ring-1 ring-secondary ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-1" role="none">
-                    <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                     <a href="#" @click="hanldeTheme" data-theme="default"  class="text-textColor block px-4 py-2 text-sm hover:bg-secondary" role="menuitem" tabindex="-1" id="menu-item-0">
                         <div class="flex">
                             <div class="rounded-full h-4 w-4 bg-[#0F172A] border-2"></div>
@@ -39,7 +38,7 @@
             </div>
         </div>
         <nav class="w-1/3">
-            <ul class="flex justify-between w-6/6 font-bold">
+            <ul class="flex justify-between w-6/6 font-bold text-xl">
                 <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/">
                     <span class="link_text " >Home</span>
                 </RouterLink></li>
