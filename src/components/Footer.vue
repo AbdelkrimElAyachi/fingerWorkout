@@ -15,7 +15,7 @@ export default {
     },
     methods: {
         sound(){
-            window.open("../sound/parameters","sound parameters","left=500,top=100,width=300,height=500");
+            window.open("../sound/parameters","sound parameters","left=500,top=100,width=400,height=500");
         }
     }
 }

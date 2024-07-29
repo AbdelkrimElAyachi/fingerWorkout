@@ -1,31 +1,26 @@
 import { defineStore } from "pinia";
-import { piniaInstance } from "./globals";
+import { piniaInstance, soundEnum } from "./globals";
 
-
-const useConfigurationStore = defineStore("configuration", {
-  state: () => ({ testDuration: 1, testDifficulty: 8, keyboardLayout: "AZERTY", wordsTheme: "cat" }),
+const useSoundStore = defineStore("store", {
+  state: () => ({ sound: 0, soundLevel: 25, soundOn: true }),
 
   getters: {
-    getTestDuration: (state) => state.testDuration,
-    getTestDifficulty: (state) => state.testDifficulty,
-    getKeyboardLayout: (state) => state.keyboardLayout,
-    getWordsTheme: (state) => state.wordsTheme,
+    getSound: (state) => state.sound,
+    getSoundLevel: (state) => state.soundLevel,
+    getSoundOn: (state) => state.soundOn,
   },
 
   actions: {
-    setTestDuration(durationInMinutes) {
-      this.testDuration = durationInMinutes * 60;
+    setSound(ind) {
+      this.sound = soundEnum[ind];
     },
-    setTestDifficulty(min, max) {
-      this.testDifficulty = [min, max];
+    setSoundLevel(value) {
+      this.soundLevel = value;
     },
-    setKeyboardLayout(layout) {
-      this.keyboardLayout = layout;
-    },
-    setWordsTheme(theme) {
-      this.wordsTheme = theme;
+    setSoundOn(value) {
+      this.soundOn = value
     }
   }
 })(piniaInstance);
 
-export { useConfigurationStore };
+export { useSoundStore };
