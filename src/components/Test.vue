@@ -187,8 +187,19 @@ export default {
             this.charIndex = 0;
             this.timeLeft = 60;
             this.finish = false;
+            this.results = {
+                wrongCharacters:0,
+                wrongWords:0,
+                correctCharacters:0,
+                correctWords:0,
+                duration:1,
+            }
             this.generatePhraseText();
             this.render();
+            this.start = false;
+            this.finish = false;
+            this.showResults = false;
+
         },
 
         // checking methods

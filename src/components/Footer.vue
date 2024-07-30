@@ -1,25 +1,41 @@
 <template>
     <div class="footer">
-        <button @click="sound">sound</button>
+        <button @click="sound" class="hover:text-primary">sound</button>
+        <div v-if="openWindow">
+            <SoundParameters />
+        </div>
         <button @click="layout">keyboard Layout</button>
         <button @click="difficulty">Difficulty</button>
     </div>
 </template>
+
 <script>
+import SoundParameters from "./SoundParameters.vue";
 
 export default {
     name:"Footer",
     data(){
+        return {
+            openWindow:"",
+        }
     },
-    created(){
+    components:{
+        SoundParameters,
     },
     methods: {
         sound(){
-            window.open("../sound/parameters","sound parameters","left=500,top=100,width=400,height=500");
+            this.openWindow != "sound" ? this.openWindow = "sound" : this.openWindow = "";
+        },
+        layout(){
+            this.openWindow != "layout" ? this.openWindow = "layout" : this.openWindow = "";
+        },
+        difficulty(){
+            this.openWindow != "difficulty" ? this.openWindow = "difficulty" : this.openWindow = "";
         }
     }
 }
 </script>
+
 <style>
 .footer{
     position:absolute;

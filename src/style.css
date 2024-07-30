@@ -21,14 +21,18 @@
         --color-secondary: #31572C;
         --color-error: #FF4F63;
         --color-key: #000;
+        --color-white: #fff;
+        --color-black: #121010;
     }
     body[data-theme='light']{
-        --color-bg: #ffffff;
+        --color-bg: #EEE;
         --color-text: #000;
         --color-primary: #3d85fe;
-        --color-secondary: #d4d4d4;
+        --color-secondary: #b4b4b4;
         --color-error: #ff3333;
         --color-key: #DDD;
+        --color-white: #000;
+        --color-black: #fff;
     }
 }
 

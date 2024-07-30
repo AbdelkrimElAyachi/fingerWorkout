@@ -2,12 +2,11 @@ import { defineStore } from "pinia";
 import { piniaInstance, soundEnum } from "./globals";
 
 const useSoundStore = defineStore("store", {
-  state: () => ({ sound: 0, soundLevel: 25, soundOn: true }),
+  state: () => ({ sound: 0, soundLevel: 25 }),
 
   getters: {
     getSound: (state) => state.sound,
     getSoundLevel: (state) => state.soundLevel,
-    getSoundOn: (state) => state.soundOn,
   },
 
   actions: {
@@ -16,9 +15,6 @@ const useSoundStore = defineStore("store", {
     },
     setSoundLevel(value) {
       this.soundLevel = value;
-    },
-    setSoundOn(value) {
-      this.soundOn = value
     }
   }
 })(piniaInstance);
