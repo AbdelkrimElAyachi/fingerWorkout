@@ -3,10 +3,7 @@ export const piniaInstance = createPinia();
 
 
 export const soundEnum = [
-  "click",
-  "awoo",
-  "test",
-  "lol",
-  "something",
-  "something",
-]
+  "cherryBlue",
+  "keyboard",
+  "typeSoft",
+];

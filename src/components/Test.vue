@@ -20,6 +20,7 @@
 
 <script>
 import {getPhrases,shuffleArray} from "../utils/phrases.js";
+import { useSoundStore } from "../store.js";
 
 export default {
     props: {
@@ -34,21 +35,26 @@ export default {
     },
     data() {
         return {
-            // customization attributes
-            // when we will store our 
+            // audio
+            audioPath: "",
+            audio : null,
+            // text data
             phrases : [],
             currentText : [],
+            // time data
             timeLeft : 0,
+            // indexes
             phraseIndex : 0, // changes when the phrase end in the function nextLine , restart when the test restart used to decide which phrase we are in
             wordIndex : 0, // 
             charIndex : 0,
+            // monitoring the test
             start:false,
             finish:false,
-            showResults : false,
             // css classes , we will use them to generate our html 
             wordClasses : [],
             charClasses : [],
-
+            // results
+            showResults : false,
             results : {
                 wrongCharacters:0,
                 wrongWords:0,
@@ -61,7 +67,6 @@ export default {
 
     unmounted(){
         document.removeEventListener('keydown',this.buttonClicked);
-        console.log("test unmounted");
     },
 
     async mounted(){
@@ -71,9 +76,10 @@ export default {
         this.results.duration = this.duration;
         this.timeLeft = this.duration * 60;
         document.addEventListener("keydown",this.buttonClicked);
-        this.phrases = await this.generatePhrases();
+        await this.generatePhrases();
         this.generatePhraseText();
         this.render();
+        this.audioPath = "/assets/sounds/"+useSoundStore.getSound+".wav";
     },
 
 
@@ -81,7 +87,7 @@ export default {
         async generatePhrases(){
             let words = this.items;
             shuffleArray(words);
-            return await getPhrases(8,words[0]);
+            this.phrases =  await getPhrases(8,words[0]);
         },
         generatePhraseText(){
             this.currentText = this.phrases[this.phraseIndex].split(" ").map((word)=>word.split(""));
@@ -147,6 +153,12 @@ export default {
             this.generatePhraseText();
         },
         buttonClicked(e){
+            if(!this.audio){
+                console.log(this.audioPath);
+                this.audio = new Audio(this.audioPath);
+            }
+            this.audio.currentTime = 0.1;
+            this.audio.play();
             // if user start typing and the test is not finished start the test else if the test is finished stop the test and return nothing
             if(!this.finish){
                 this.start = true;
@@ -213,7 +225,9 @@ export default {
         isLineEnding(){
             return (this.wordIndex >= this.currentText.length);
         },
-
+        playSound(){
+            console.log("../assets/sounds/"+useSoundStore.getSound+".wav");
+        },
     }
 };
 </script>
