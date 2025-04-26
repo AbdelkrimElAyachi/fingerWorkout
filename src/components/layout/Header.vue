@@ -42,9 +42,6 @@
                 <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/">
                     <span class="link_text " >Home</span>
                 </RouterLink></li>
-                <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/training">
-                    <span class="link_text" >Training</span>
-                </RouterLink></li>
                 <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/contribute">
                     <span class="link_text" >Contribute</span>
                 </RouterLink></li>

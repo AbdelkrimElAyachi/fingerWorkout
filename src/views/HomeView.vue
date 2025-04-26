@@ -1,8 +1,7 @@
 <script setup>
-    import Header from "../components/Header.vue";
-    import Footer from "../components/Footer.vue";
-    import Test from "../components/Test.vue";
-    import Keyboard from "../components/keyboard.vue";
+    import Header from "@/components/layout/Header.vue";
+    import Footer from "@/components/layout/Footer.vue";
+    import Test from "@/components/Test.vue";
 </script>
 <template>
   <main class="bg-backgroundColor min-h-screen text-textColor">
@@ -18,8 +17,7 @@
 export default {
     name: "HomeView",
     components: {
-        Test,
-        Keyboard,
+        Test
     },
 };
 </script>

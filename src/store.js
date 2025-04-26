@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { piniaInstance, soundEnum } from "./globals";
+import { piniaInstance, sounds } from "@/globals";
 
-const useSoundStore = defineStore("store", {
+const useSoundStore = defineStore("sound", {
   state: () => ({ sound: "keyboard", soundLevel: 25 }),
 
   getters: {

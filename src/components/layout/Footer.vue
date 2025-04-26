@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import SoundParameters from "./SoundParameters.vue";
+import SoundParameters from "@/components/SoundParameters.vue";
 
 export default {
     name:"Footer",

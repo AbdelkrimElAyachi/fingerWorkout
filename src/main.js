@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
-import { piniaInstance } from "./globals.js";
+import { piniaInstance } from "@/globals.js";
 import { createRouter, createWebHistory } from 'vue-router'
-import './style.css'
-import App from './App.vue'
-import routes from './routes.js';
+import '@/style.css'
+import routes from '@/routes.js';
+import App from '@/App.vue';
 
 
 const router = createRouter({

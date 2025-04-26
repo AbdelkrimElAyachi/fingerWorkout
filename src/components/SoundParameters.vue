@@ -5,7 +5,7 @@
         <div class="container">
           <div>
             <select class="select" v-model="sound" >
-                    <option v-for="choice in choices" :key="choice" :value="choice"  > {{ choice }} </option>
+              <option v-for="choice in choices" :key="choice" :value="choice"  > {{ choice }} </option>
             </select>
           </div>
           <div class="slider">
@@ -19,7 +19,7 @@
 
 <script>
 import { useSoundStore } from "../store.js";
-import { soundEnum } from "../globals.js";
+import { sounds } from "../globals.js";
 
 export default {
     name: "SoundParameters",
@@ -33,7 +33,7 @@ export default {
     created(){
         this.soundLevel = useSoundStore.getSoundLevel;
         this.sound = useSoundStore.getSound;
-        this.choices = soundEnum;
+        this.choices = sounds;
     },
     watch: {
         soundLevel(newV,oldV){
