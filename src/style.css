@@ -21,7 +21,6 @@
         --color-error: #FF4F63;
         --color-key: #000;
         --color-white: #fff;
-        --color-black: #121010;
     }
     body[data-theme='light']{
         --color-bg: #EEE;
@@ -31,7 +30,6 @@
         --color-error: #ff3333;
         --color-key: #DDD;
         --color-white: #000;
-        --color-black: #fff;
     }
 }
 
@@ -43,7 +41,3 @@
 body {
   font-family: sans-serif;
 }
-
-
-
-

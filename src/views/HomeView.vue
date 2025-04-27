@@ -7,7 +7,7 @@
   <main class="bg-backgroundColor min-h-screen text-textColor">
     <Header/>
     <div class="mt-16">
-        <Test ref="test" :duration="1" :items="['dog','cat','algorithm','science']"/> 
+        <Test ref="test" :items="['dog','cat','algorithm','science']"/> 
     </div>
     <Footer/>
   </main> 
@@ -17,7 +17,7 @@
 export default {
     name: "HomeView",
     components: {
-        Test
+      Test
     },
 };
 </script>

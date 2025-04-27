@@ -1,46 +1,34 @@
 <script setup>
 </script>
 <template>
-    <div >
-        <div class="container" style="left:15px">
+    <div class="">
+        <div class="container" style="left: 85px;">
           <div>
-            <select class="select" v-model="sound" >
-              <option v-for="choice in choices" :key="choice" :value="choice"  > {{ choice }} </option>
+            <select class="select" v-model="duration" >
+              <option v-for="n in 10" :key="n" :value="n"> {{ n }} Minute(s) </option>
             </select>
           </div>
-          <div class="slider">
-          <input v-model="soundLevel" type="range" min="0" max="100" />
-          <output id="rangevalue">{{ soundLevel }}</output>
-          </div>
         </div>
-        <div class="triangle" style="left:15px;bottom: 65px;" />
+        <div class="triangle" style="left:95px;bottom:65px;" />
     </div>
 </template>
 
 <script>
-import { useSoundStore } from "@/store.js";
-import { sounds } from "@/globals.js";
+import { useParameterStore } from "@/store.js";
 
 export default {
-    name: "SoundParameters",
+    name: "TestParameters",
     data(){
         return {
-            soundLevel:0,
-            sound:"/assets/sounds/something",
-            choices: [],
+            duration: 1,
         }
     },
     created(){
-        this.soundLevel = useSoundStore.getSoundLevel;
-        this.sound = useSoundStore.getSound;
-        this.choices = sounds;
+        this.duration = useParameterStore.getDuration;
     },
     watch: {
-        soundLevel(newV,oldV){
-            useSoundStore.setSoundLevel(newV);
-        },
-        sound(newV,oldV){
-            useSoundStore.setSound(newV);
+        duration(newV,oldV){
+            useParameterStore.setDuration(newV);
         }
     },
 };
@@ -65,21 +53,18 @@ export default {
     border-left: 25px solid transparent;
     border-right: 25px solid transparent;
     border-top: 25px solid var(--color-primary);
-    animation-name: triangle;
-    animation-duration: 0.6s;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+    animation: triangle 0.6s infinite alternate;
 }
 @keyframes triangle{
-    from  {bottom:65px;}
-    to {bottom:50px;}
+    from  {transform: translateY(0);}
+    to {transform: translateY(15px);}
 }
 .container{
     border: solid var(--color-text) 3px;
     border-radius: 10px 10px 10px 0;
     position:absolute;
     width:200px;
-    padding: 10px 10px 0px 10px;
+    padding: 10px;
     bottom:100px;
     text-align:center;
 }

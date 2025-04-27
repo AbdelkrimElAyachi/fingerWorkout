@@ -9,7 +9,7 @@ export function shuffleArray(array) {
 }
 
 
-export async function getPhrases( qunatity, title) {
+export async function getPhrases(qunatity, title, language = "eng") {
 
     const res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exsentences=${qunatity}&exlimit=1&titles=${title}&explaintext=1&format=json&formatversion=2&origin=*`)
     const data = await res.json();

@@ -1,89 +1,96 @@
-<script setup>
-    import Popup from "./Popup.vue";
-</script>
-
+<!-- Your main component (e.g., TypingTest.vue) -->
 <template>
     <div class="mt-16 mx-auto text-secondary w-fit">
-        <p class="text-primary text-center text-2xl"> {{timeLeft}} s</p>
-        <p ref="phrase" class="text-bold text-2xl leading-[3rem]"></p>
-        <p>wrong characters : {{results.wrongCharacters}}  correct characters : {{results.correctCharacters}}</p>
-        <p>wrong words : {{results.wrongWords}}  correct words : {{results.correctWords}}</p>
-        <div class="flex gap-2 mt-5 justify-center">
-            <button @click="restart" class="text-primary border-2 px-4 py-1  border-primary hover:text-white hover:bg-primary">restart</button>
-        </div>
-        <div v-if="showResults">
-            <Popup :result=results @close-results="closeResults" />
-        </div>
+      <Timer 
+        :timeLeft="timeLeft"
+        @time-up="handleTimeUp" 
+      />
+      
+      <p ref="phrase" class="text-bold text-2xl leading-[3rem]"></p>
+      <RealTimeDisplayer
+        :results="results"
+      />
+      
+      <TypingArea @restart="restart" />
+      
+      <div v-if="showResults">
+        <Popup :result="results" @close-results="closeResults" />
+      </div>
     </div>
-</template>
-
-
+  </template>
+  
 <script>
-import {getPhrases,shuffleArray} from "../utils/phrases.js";
-import { useSoundStore } from "../store.js";
 
-export default {
+  import Timer from '@/components/ui/Timer.vue'
+  import RealTimeDisplayer from '@/components/ui/RealTimeDisplayer.vue'
+  import TypingArea from '@/components/ui/TypingArea.vue'
+  import Popup from '@/components/ui/Popup.vue'
+  import { getPhrases, shuffleArray } from "@/utils/phrases.js"
+  import { useSoundStore, useParameterStore } from "@/store.js"
+  
+  export default {
+    components: { Timer, RealTimeDisplayer, TypingArea, Popup },
     props: {
-        duration:{
-            type: Number,
-            required:true
-        },
-        items:{
-            type: Array,
-            required:true
-        }
+      items: { type: Array, required: true }
     },
     data() {
-        return {
-            // audio
-            audioPath: "",
-            audio : null,
-            // text data
-            phrases : [],
-            currentText : [],
-            // time data
-            timeLeft : 0,
-            // indexes
-            phraseIndex : 0, // changes when the phrase end in the function nextLine , restart when the test restart used to decide which phrase we are in
-            wordIndex : 0, // 
-            charIndex : 0,
-            // monitoring the test
-            start:false,
-            finish:false,
-            // css classes , we will use them to generate our html 
-            wordClasses : [],
-            charClasses : [],
-            // results
-            showResults : false,
-            results : {
-                wrongCharacters:0,
-                wrongWords:0,
-                correctCharacters:0,
-                correctWords:0,
-                duration:1,
-            }
-        };
+      return {
+        // audio
+        audioPath: "",
+        audio: null,
+        // text data
+        phrases: [],
+        currentText: [],
+        // indexes
+        phraseIndex: 0,
+        wordIndex: 0,
+        charIndex: 0,
+        // monitoring the test
+        start: false,
+        finish: false,
+        timeLeft: 0, 
+        // css classes
+        wordClasses: [],
+        charClasses: [],
+        // results
+        showResults: false,
+        results: {
+          wrongCharacters: 0,
+          wrongWords: 0,
+          correctCharacters: 0,
+          correctWords: 0,
+          duration: 1,
+        }
+      }
     },
-
-    unmounted(){
-        document.removeEventListener('keydown',this.buttonClicked);
+    async mounted() {
+      document.addEventListener("keydown", this.buttonClicked)
+      this.results.duration = this.duration
+      await this.generatePhrases()
+      this.duration = useParameterStore.getDuration
+      this.results.duration = this.duration;
+      this.timeLeft = this.duration * 60;
+      this.generatePhraseText()
+      this.audioPath = "/assets/sounds/" + useSoundStore.getSound + ".wav"
+      this.render();
+      this.startTimer();
     },
-
-    async mounted(){
-        setInterval(() => {
-            this.secondPassed();
-        }, 1000);
-        this.results.duration = this.duration;
-        this.timeLeft = this.duration * 60;
-        document.addEventListener("keydown",this.buttonClicked);
-        await this.generatePhrases();
-        this.generatePhraseText();
-        this.render();
-        this.audioPath = "/assets/sounds/"+useSoundStore.getSound+".wav";
+    unmounted() {
+      document.removeEventListener('keydown', this.buttonClicked)
     },
-
-
     methods: {
+        // Keep all your existing methods except render() and generateHtml()
+        // which are now in RealTimeDisplayer
+        startTimer() {
+            this.timerInterval = setInterval(() => {
+                this.secondPassed();
+            }, 1000);
+        },
+        handleTimeUp() {
+            this.finish = true
+            this.showResults = true
+        },
+        // ... rest of your methods
         async generatePhrases(){
             let words = this.items;
             shuffleArray(words);
@@ -153,11 +160,10 @@ export default {
             this.generatePhraseText();
         },
         buttonClicked(e){
-            if(!this.audio){
-                console.log(this.audioPath);
-                this.audio = new Audio(this.audioPath);
-            }
+            this.audio = new Audio("/assets/sounds/" + useSoundStore.getSound + ".wav");
             this.audio.currentTime = 0.1;
+            console.log(useSoundStore.getSoundLevel/100);
+            this.audio.volume = (useSoundStore.getSoundLevel/100);
             this.audio.play();
             // if user start typing and the test is not finished start the test else if the test is finished stop the test and return nothing
             if(!this.finish){
@@ -192,12 +198,13 @@ export default {
             this.charIndex++;
             this.render();
         },
-        restart(e){
-            e.target.blur();
+        restart(){
+            this.generatePhraseText();
             this.phraseIndex = 0;
             this.wordIndex = 0;
             this.charIndex = 0;
-            this.timeLeft = 60;
+            this.duration = useParameterStore.getDuration
+            this.timeLeft = this.duration * 60;
             this.finish = false;
             this.results = {
                 wrongCharacters:0,
@@ -206,12 +213,10 @@ export default {
                 correctWords:0,
                 duration:1,
             }
-            this.generatePhraseText();
-            this.render();
             this.start = false;
             this.finish = false;
             this.showResults = false;
-
+            this.render();
         },
 
         // checking methods
@@ -229,5 +234,5 @@ export default {
             console.log("../assets/sounds/"+useSoundStore.getSound+".wav");
         },
     }
-};
-</script>
+  }
+  </script>

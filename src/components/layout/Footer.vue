@@ -1,16 +1,19 @@
 <template>
-    <div class="footer">
+    <div class="absolute bottom-0 p-6 flex gap-6">
         <button @click="sound" class="hover:text-primary">sound</button>
-        <div v-if="openWindow">
+        <button @click="parameters">test parameters</button>
+        <div v-if="openWindow=='sound'">
             <SoundParameters />
         </div>
-        <button @click="layout">keyboard Layout</button>
-        <button @click="difficulty">Difficulty</button>
+        <div v-else-if="openWindow=='parameters'">
+            <TestParameters />
+        </div>
     </div>
 </template>
 
 <script>
 import SoundParameters from "@/components/SoundParameters.vue";
+import TestParameters from "@/components/TestParameters.vue";
 
 export default {
     name:"Footer",
@@ -21,27 +24,18 @@ export default {
     },
     components:{
         SoundParameters,
+        TestParameters
     },
     methods: {
         sound(){
             this.openWindow != "sound" ? this.openWindow = "sound" : this.openWindow = "";
         },
-        layout(){
-            this.openWindow != "layout" ? this.openWindow = "layout" : this.openWindow = "";
-        },
-        difficulty(){
-            this.openWindow != "difficulty" ? this.openWindow = "difficulty" : this.openWindow = "";
+        parameters(){
+            this.openWindow != "parameters" ? this.openWindow = "parameters" : this.openWindow = "";
         }
     }
 }
 </script>
 
 <style>
-.footer{
-    position:absolute;
-    bottom:0;
-    padding:1rem;
-    display:flex;
-    gap:2rem;
-}
 </style>
