@@ -4,7 +4,7 @@
     import Test from "@/components/Test.vue";
 </script>
 <template>
-  <main class="bg-backgroundColor min-h-screen text-textColor">
+  <main class="main-container bg-backgroundColor min-h-screen text-textColor">
     <Header/>
     <div class="mt-16">
         <Test ref="test" :items="['dog','cat','algorithm','science']"/> 

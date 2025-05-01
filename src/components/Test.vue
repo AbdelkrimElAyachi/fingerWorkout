@@ -160,11 +160,7 @@
             this.generatePhraseText();
         },
         buttonClicked(e){
-            this.audio = new Audio("/assets/sounds/" + useSoundStore.getSound + ".wav");
-            this.audio.currentTime = 0.1;
-            console.log(useSoundStore.getSoundLevel/100);
-            this.audio.volume = (useSoundStore.getSoundLevel/100);
-            this.audio.play();
+
             // if user start typing and the test is not finished start the test else if the test is finished stop the test and return nothing
             if(!this.finish){
                 this.start = true;
@@ -173,6 +169,10 @@
                 this.start = false;
                 return ;
             }
+            this.audio = new Audio("/assets/sounds/" + useSoundStore.getSound + ".wav");
+            this.audio.currentTime = 0.1;
+            this.audio.volume = (useSoundStore.getSoundLevel/100);
+            this.audio.play();
             // if the user press space key 
             if(e.key == " ") {
                 this.spaceClicked();
