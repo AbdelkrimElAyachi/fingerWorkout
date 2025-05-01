@@ -1,7 +1,7 @@
 <script setup>
-    import Header from "@/components/layout/Header.vue";
-    import Footer from "@/components/layout/Footer.vue";
-    import Test from "@/components/Test.vue";
+  import Header from "@/components/layout/Header.vue";
+  import Footer from "@/components/layout/Footer.vue";
+  import Test from "@/components/Test.vue";
 </script>
 <template>
   <main class="main-container bg-backgroundColor min-h-screen text-textColor">

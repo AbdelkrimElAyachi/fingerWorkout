@@ -49,14 +49,12 @@ export default {
 <style>
 
 .select{
-    border:solid var(--color-white) 2px;
-    background:transparent;
-    width:100%;
-    padding:4px;
-    cursor:pointer;
-}
-.select option{
-    color: black;
+  border:solid var(--color-white) 2px;
+  background:transparent;
+  width:100%;
+  padding:4px;
+  cursor:pointer;
+  text-align: center;
 }
 .triangle{
     position:absolute;
@@ -90,38 +88,16 @@ export default {
 }
 
 input[type="range"] {
+  cursor: pointer;
   -webkit-appearance: none !important;
   width: 100%;
   height: 15px;
   background-color: transparent;
-  border: 1px solid var(--color-white);
+  border: 2px solid var(--color-white);
   border-radius: 10px;
   margin: auto;
   transition: all 0.3s ease;
 }
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none !important;
-  width: 20px;
-  height: 20px;
-  background-color: var(--color-white);
-  border: solid var(--color-primary) 2px;
-  border-radius: 30px;
-  box-shadow: 0px 0px 3px #3c6d59;
-  transition: all 0.5s ease;
-}
-input[type="range"]::-webkit-slider-thumb:hover {
-  width:25px;
-  height:25px;
-  background-color: var(--color-bg);
-  border-color: var(--color-primary);
-  border-width: 5px;
-  cursor:pointer;
-}
-input[type="range"]::-webkit-slider-thumb:active {
-  box-shadow: 0px 0px 1px var(--color-secondary);
-}
-
 #rangevalue {
   text-align: center;
   font-family: "Quantico", sans-serif;
