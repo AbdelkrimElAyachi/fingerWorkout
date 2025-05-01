@@ -14,8 +14,8 @@
 export default {
     methods: {
         restart(e) {
-        e.target.blur()
-        this.$emit('restart')
+            e.target.blur()
+            this.$emit('restart')
         }
     }
 }

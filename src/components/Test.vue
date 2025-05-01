@@ -161,6 +161,9 @@
         },
         buttonClicked(e){
 
+            // ignoring any other keys except english letters and numbers , we can add other languages in the future
+            if(!this.isLetter(e.key)) return false;
+
             // if user start typing and the test is not finished start the test else if the test is finished stop the test and return nothing
             if(!this.finish){
                 this.start = true;
@@ -169,17 +172,17 @@
                 this.start = false;
                 return ;
             }
-            this.audio = new Audio("/assets/sounds/" + useSoundStore.getSound + ".wav");
-            this.audio.currentTime = 0.1;
-            this.audio.volume = (useSoundStore.getSoundLevel/100);
-            this.audio.play();
             // if the user press space key 
             if(e.key == " ") {
                 this.spaceClicked();
                 return ;
             } 
-            // ignoring any other keys except english letters and numbers , we can add other languages in the future
-            if(!this.isLetter(e.key)) return false;
+
+            this.audio = new Audio("/assets/sounds/" + useSoundStore.getSound + ".wav");
+            this.audio.currentTime = 0.1;
+            this.audio.volume = (useSoundStore.getSoundLevel/100);
+            this.audio.play();
+
             if(e.key == this.currentText[this.wordIndex][this.charIndex]){
                 this.results.correctCharacters++;
                 this.charClasses[this.wordIndex][this.charIndex] = "text-primary";
@@ -221,6 +224,7 @@
 
         // checking methods
         isLetter(key){
+            if(key == " ") return true;
             const code = key.charCodeAt(0);
             return key.length <= 1 && ((code >= 65 && code <= 90) || (code >= 97 && code <= 122) ||(code >= 48 && code <= 57) ) ;
         },

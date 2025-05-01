@@ -27,10 +27,12 @@ export default {
         TestParameters
     },
     methods: {
-        sound(){
+        sound(e){
+            e.target.blur();
             this.openWindow != "sound" ? this.openWindow = "sound" : this.openWindow = "";
         },
-        parameters(){
+        parameters(e){
+            e.target.blur();
             this.openWindow != "parameters" ? this.openWindow = "parameters" : this.openWindow = "";
         }
     }

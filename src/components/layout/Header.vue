@@ -39,12 +39,21 @@
         </div>
         <nav class="w-fit">
             <ul class="flex items-end w-fit gap-6 font-bold text-xl">
-                <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/">
-                    <span class="link_text " >Home</span>
-                </RouterLink></li>
-                <li class="hover:text-primary hover:border-b-4 border-primary"><RouterLink to="/contribute">
-                    <span class="link_text" >Contribute</span>
-                </RouterLink></li>
+                <li class="hover:text-primary hover:border-b-4 border-primary">
+                    <RouterLink to="/">
+                        <span class="link_text " >Home</span>
+                    </RouterLink>
+                </li>
+                <li class="hover:text-primary hover:border-b-4 border-primary">
+                    <RouterLink to="/contribute">
+                        <span class="link_text" >Contribute</span>
+                    </RouterLink>
+                </li>
+                <li class="hover:text-primary hover:border-b-4 border-primary">
+                    <RouterLink to="/login">
+                        <span class="link_text" >Log In</span>
+                    </RouterLink>
+                </li>
             </ul>
         </nav>
     </header>
