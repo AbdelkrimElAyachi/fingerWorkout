@@ -19,14 +19,6 @@ import { RouterLink } from 'vue-router';
             required
         />
         <BaseInput
-            v-model="username"
-            label="Username :"
-            type="text"
-            placeholder="your username"
-            :error="usernameError"
-            required
-        />
-        <BaseInput
             v-model="password"
             label="Password :"
             type="password"
@@ -35,28 +27,55 @@ import { RouterLink } from 'vue-router';
         />
 
         <div class="flex flex-col gap-2 justify-center">
-            <BaseButton @click="handleSubmit">Submit</BaseButton>
+            <BaseButton @click="handleSignup" :disabled="isLoading">{{ isLoading ? 'Loading...' : 'submit' }}</BaseButton>
             <div class="text-secondary">You already have an account <span><RouterLink class="text-textColor" to="/login">Log In</RouterLink></span></div>
         </div>
 
     </form>
 </template>
 <script>
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../stores';
 
 export default {
     data(){
         return {
             email:"",
             emailError:"",
-            username:"",
-            usernameError:"",
             password: "",
             passwordError:"",
+            isLoading: false,
+        }
+    },
+    computed: {
+        authStore(){
+            return useAuthStore();
         }
     },
     watch:{
         password(newVal){
-            this.authError = newVal.length < 8 ? "Passwordd too short" : "";
+            this.passwordError = newVal.length < 8 ? "Passwordd too short" : "";
+        },
+        'authStore.error'(newError){
+            if(newError){
+                this.authError = newError;
+                this.authStore.clearError();
+            }
+        }
+    },
+    methods:{
+        async handleSignup(e){
+            e.preventDefault();
+            if(!this.email || !this.password){
+                this.authError = 'Please fill in all fields'
+            }
+            this.isLoading = true;
+            this.authError = '';
+
+            await this.authStore.signUp(this.email, this.password);
+
+            this.authStore.clearError();
+            this.isLoading = false;
         }
     }
 }

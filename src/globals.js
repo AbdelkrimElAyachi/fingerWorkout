@@ -8,7 +8,7 @@ export const sounds = [
   "typeSoft",
 ];
 
-// main.js or directives.js
+// function to check if user click outside an element
 export const clickOutside = {
   beforeMount(el, binding) {
     el.clickOutsideEvent = (event) => {

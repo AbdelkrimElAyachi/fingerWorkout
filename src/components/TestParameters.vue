@@ -2,7 +2,7 @@
 </script>
 <template>
     <div class="">
-        <div class="container" style="left: 85px;">
+        <div class="container" style="left: 95px;">
           <div>
             <select class="select" v-model="duration" >
               <option v-for="n in 10" :key="n" :value="n"> {{ n }} Minute(s) </option>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { useParameterStore } from "@/store.js";
+import { useParameterStore } from "@/stores.js";
 
 export default {
     name: "TestParameters",

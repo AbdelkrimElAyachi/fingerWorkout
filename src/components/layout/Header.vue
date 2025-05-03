@@ -49,10 +49,13 @@
                         <span class="link_text" >Contribute</span>
                     </RouterLink>
                 </li>
-                <li class="hover:text-primary hover:border-b-4 border-primary">
+                <li v-if="!user" class="hover:text-primary hover:border-b-4 border-primary">
                     <RouterLink to="/login">
                         <span class="link_text" >Log In</span>
                     </RouterLink>
+                </li>
+                <li v-if="user" class="hover:text-primary hover:border-b-4 border-primary">
+                    <button @click="handleLogout" class="link_text" >Log Out</button>
                 </li>
             </ul>
         </nav>
@@ -60,32 +63,51 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                dropDownOpen:false,
-                currentTheme:"default"
-            };
-        },
-        created(){
-            console.log("header created");
-            this.currentTheme = document.body.getAttribute("data-theme");
-        },
-        methods: {
-            toggleDropDown(){
-                this.dropDownOpen  = !this.dropDownOpen;
-            },
-            hadnleDropDOwn(closeOrOpen){
-                this.dropDownOpen = closeOrOpen;
-            },
-            hanldeTheme(e){
-                this.currentTheme = e.currentTarget.getAttribute("data-theme");
-                this.renderTheme();
-            },
-            renderTheme(){
-                document.body.setAttribute("data-theme",this.currentTheme);
+import { useAuthStore } from '../../stores';
+
+export default {
+    data() {
+        return {
+            dropDownOpen:false,
+            currentTheme:"default",
+            user:null,
+        };
+    },
+    computed: {
+        authStore(){
+            return useAuthStore();
+        }
+    },
+    watch:{
+        'authStore.user'(user){
+            if(user){
+                this.user = user;
+                console.log(user);
             }
         }
+    },
+    async created(){
+        this.currentTheme = document.body.getAttribute("data-theme");
+        this.user = this.authStore.user;
+    },
+    methods: {
+        toggleDropDown(){
+            this.dropDownOpen  = !this.dropDownOpen;
+        },
+        hadnleDropDOwn(closeOrOpen){
+            this.dropDownOpen = closeOrOpen;
+        },
+        hanldeTheme(e){
+            this.currentTheme = e.currentTarget.getAttribute("data-theme");
+            this.renderTheme();
+        },
+        renderTheme(){
+            document.body.setAttribute("data-theme",this.currentTheme);
+        },
+        async handleLogout(){
+            await this.authStore.logout();
+        }
+    }
     };
 </script>
 <style scoped>

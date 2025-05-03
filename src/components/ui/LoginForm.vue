@@ -26,25 +26,52 @@ import { RouterLink } from 'vue-router';
         />
 
         <div class="flex flex-col gap-2 justify-center">
-            <BaseButton @click="handleSubmit">Submit</BaseButton>
+            <BaseButton @click="handleLogin" :disalbed="isLoading">{{isLoading ? 'Loading...' : 'Submit'}}</BaseButton>
             <div class="text-secondary">You don't have an account <span><RouterLink class="text-textColor" to="/signup">Sign Up</RouterLink></span></div>
         </div>
 
     </form>
 </template>
 <script>
+import { useAuthStore } from '../../stores';
+import { useRouter } from 'vue-router';
+
 
 export default {
     data(){
         return {
-            username:"",
+            email:"",
             password: "",
             authError:"",
+            isLoading: false,
+        }
+    },
+    computed: {
+        authStore(){
+            return useAuthStore();
         }
     },
     watch:{
-        password(newVal){
-            this.authError = newVal.length < 8 ? "Passwordd too short" : "";
+        'authStore.error'(newError){
+            if(newError){
+                this.authError = newError;
+                this.authStore.clearError();
+            }
+        }
+    },
+    methods:{
+        async handleLogin(){
+            if(!this.email || !this.password){
+                this.authError = 'Please fill in all fields'
+            }
+            this.isLoading = true;
+            this.authError = '';
+
+            await this.authStore.login(this.email, this.password);
+
+
+            this.authStore.clearError();
+            this.isLoading = false;
         }
     }
 }

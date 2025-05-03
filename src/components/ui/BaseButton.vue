@@ -3,7 +3,6 @@
       :type="type"
       :disabled="disabled"
       :class="buttonClasses"
-      @click="$emit('click', $event)"
     >
       <slot></slot>
     </button>

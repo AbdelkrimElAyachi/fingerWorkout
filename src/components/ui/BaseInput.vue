@@ -66,7 +66,7 @@
       inputClasses() {
         return [
           'text-black p-2 block w-full rounded-md shadow-sm transition',
-          'border-gray-300 focus:border-blue-500 focus:ring-blue-500',
+          'border-2 border-textColor focus:border-blue-500 focus:ring-blue-500',
           this.error ? 'bg-red' : '',
           this.disabled ? 'bg-secondary cursor-not-allowed' : ''
         ].join(' ')

@@ -8,9 +8,9 @@
               <option v-for="choice in choices" :key="choice" :value="choice"  > {{ choice }} </option>
             </select>
           </div>
-          <div class="slider">
-          <input v-model="soundLevel" type="range" min="0" max="100" />
-          <output id="rangevalue">{{ soundLevel }}</output>
+          <div class="slider soundParameter">
+            <input v-model="soundLevel" type="range" min="0" max="100" />
+            <output id="rangevalue">{{ soundLevel }}</output>
           </div>
         </div>
         <div class="triangle" style="left:15px;bottom: 65px;" />
@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { useSoundStore } from "@/store.js";
+import { useSoundStore } from "@/stores.js";
 import { sounds } from "@/globals.js";
 
 export default {
@@ -62,7 +62,7 @@ export default {
     height: 0;
     border-left: 25px solid transparent;
     border-right: 25px solid transparent;
-    border-top: 25px solid var(--color-primary);
+    border-top: 25px solid var(--color-text);
     animation-name: triangle;
     animation-duration: 0.6s;
     animation-iteration-count: infinite;
@@ -77,7 +77,6 @@ export default {
     border-radius: 10px 10px 10px 0;
     position:absolute;
     width:200px;
-    padding: 10px 10px 0px 10px;
     bottom:100px;
     text-align:center;
 }

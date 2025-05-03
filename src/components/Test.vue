@@ -26,7 +26,7 @@
   import TypingArea from '@/components/ui/TypingArea.vue'
   import Popup from '@/components/ui/Popup.vue'
   import { getPhrases, shuffleArray } from "@/utils/phrases.js"
-  import { useSoundStore, useParameterStore } from "@/store.js"
+  import { useSoundStore, useParameterStore } from "@/stores.js"
   
   export default {
     components: { Timer, RealTimeDisplayer, TypingArea, Popup },
@@ -37,7 +37,7 @@
       return {
         // audio
         audioPath: "",
-        audio: null,
+        audio: null, 
         // text data
         phrases: [],
         currentText: [],
@@ -70,7 +70,7 @@
       this.duration = useParameterStore.getDuration
       this.results.duration = this.duration;
       this.timeLeft = this.duration * 60;
-      this.generatePhraseText()
+      this.generatePhraseText();
       this.audioPath = "/assets/sounds/" + useSoundStore.getSound + ".wav"
       this.render();
       this.startTimer();
@@ -172,17 +172,17 @@
                 this.start = false;
                 return ;
             }
-            // if the user press space key 
-            if(e.key == " ") {
-                this.spaceClicked();
-                return ;
-            } 
 
             this.audio = new Audio("/assets/sounds/" + useSoundStore.getSound + ".wav");
             this.audio.currentTime = 0.1;
             this.audio.volume = (useSoundStore.getSoundLevel/100);
             this.audio.play();
 
+            // if the user press space key 
+            if(e.key == " ") {
+                this.spaceClicked();
+                return ;
+            } 
             if(e.key == this.currentText[this.wordIndex][this.charIndex]){
                 this.results.correctCharacters++;
                 this.charClasses[this.wordIndex][this.charIndex] = "text-primary";
