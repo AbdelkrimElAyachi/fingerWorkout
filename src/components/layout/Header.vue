@@ -80,10 +80,7 @@ export default {
     },
     watch:{
         'authStore.user'(user){
-            if(user){
-                this.user = user;
-                console.log(user);
-            }
+            this.user = user;
         }
     },
     async created(){

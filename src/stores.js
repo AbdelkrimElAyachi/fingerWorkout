@@ -83,10 +83,6 @@ export const useAuthStore = defineStore('auth', {
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         this.user = userCredential.user;
-        await this.user.updateProfile({
-          displayName: 'testName',
-          photoUrl: 'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1746309626~exp=1746313226~hmac=66d163c4d1cca779ccb29ab2ea0091a9ef79cb9bbf155b824a641fc839588f5e&w=740'
-        })
         await this.sendVerificationEmail();
         return userCredential;
       } catch (err) {
@@ -101,7 +97,6 @@ export const useAuthStore = defineStore('auth', {
         this.user = userCredential.user;
         return userCredential;
       } catch (err) {
-        console.log(err.message);
         this.error = this.getFirebaseError(err.message);
       }
     },
