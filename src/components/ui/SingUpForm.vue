@@ -1,14 +1,13 @@
 <script setup>
 import BaseButton from '@/components/ui/BaseButton.vue';
 import BaseInput from '@/components/ui/BaseInput.vue';
-import { RouterLink } from 'vue-router';
-
 </script>
+
 <template>
-    <form class="text-textColor h-fit flex flex-col gap-6 p-4 border-4 border-textColor min-w-80">
+    <form class="text-textColor h-fit flex flex-col gap-6 p-4 border-4 border-textColor min-w-80 rounded-lg">
         <div>
             <h5 class="text-center">Sign Up</h5>
-            <div class="w-full h-1 bg-textColor"></div>
+            <hr class="">
         </div>
         <BaseInput
             v-model="email"
@@ -22,6 +21,7 @@ import { RouterLink } from 'vue-router';
             v-model="password"
             label="Password :"
             type="password"
+            placeholder="******"
             :error="passwordError"
             required
         />
@@ -34,7 +34,7 @@ import { RouterLink } from 'vue-router';
     </form>
 </template>
 <script>
-import { useRouter } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../../stores';
 
 export default {
@@ -50,15 +50,22 @@ export default {
     computed: {
         authStore(){
             return useAuthStore();
+        },
+        router(){
+            return useRouter();
         }
     },
     watch:{
         password(newVal){
-            this.passwordError = newVal.length < 8 ? "Passwordd too short" : "";
+            this.passwordError = newVal.length < 6 ? "Passwordd too short" : "";
+        },
+        email(newVal){
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            this.emailError = re.test(newVal) ? "" : "Email invalid";
         },
         'authStore.error'(newError){
             if(newError){
-                this.authError = newError;
+                this.passwordError = newError;
                 this.authStore.clearError();
             }
         }
@@ -67,15 +74,15 @@ export default {
         async handleSignup(e){
             e.preventDefault();
             if(!this.email || !this.password){
-                this.authError = 'Please fill in all fields'
+                this.passwordError = 'Please fill in all fields'
             }
             this.isLoading = true;
-            this.authError = '';
+            this.passwordError = '';
 
             await this.authStore.signUp(this.email, this.password);
 
-            this.authStore.clearError();
             this.isLoading = false;
+            this.router.push('/');
         }
     }
 }

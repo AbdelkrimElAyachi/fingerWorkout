@@ -1,8 +1,8 @@
 <template>
     <div class="space-y-1">
-      <label v-if="label" :for="id" class="block text-font-medium text-textColor">
+      <label v-if="label" :for="id" class="block text-font-medium text-textColor font-bold">
         {{ label }}
-        <span v-if="required" class="text-error">*</span>
+        <span v-if="required" class="text-error"></span>
       </label>
       <input
         :id="id"
@@ -35,7 +35,7 @@
       type: {
         type: String,
         default: 'text',
-        validator: (value) => ['text', 'email', 'password', 'number', 'tel', 'url'].includes(value)
+        validator: (value) => ['text', 'email', 'password', 'file', 'number', 'tel', 'url'].includes(value)
       },
       label: {
         type: String,

@@ -72,7 +72,6 @@ export const useAuthStore = defineStore('auth', {
         onAuthStateChanged(auth, (user) => {
           this.user = user;
           this.authIsReady = true;
-          console.log(user);
           resolve(user);
         });
       });

@@ -7,7 +7,7 @@
   <main class="main-container bg-backgroundColor min-h-screen text-textColor">
     <Header/>
     <div class="mt-16">
-        <Test ref="test" :items="['dog','cat','algorithm','science']"/> 
+        <Test ref="test" :items="['mother','bear','dog','cat','algorithm','science']"/> 
     </div>
     <Footer/>
   </main> 

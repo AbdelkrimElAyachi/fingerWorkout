@@ -55,7 +55,9 @@
                     </RouterLink>
                 </li>
                 <li v-if="user" class="hover:text-primary hover:border-b-4 border-primary">
-                    <button @click="handleLogout" class="link_text" >Log Out</button>
+                    <RouterLink to="/profile">
+                        <button class="link_text" >Profile</button>
+                    </RouterLink>
                 </li>
             </ul>
         </nav>
@@ -63,7 +65,7 @@
 </template>
 
 <script>
-import { useAuthStore } from '../../stores';
+import { useAuthStore } from '@/stores';
 
 export default {
     data() {
@@ -101,9 +103,6 @@ export default {
         renderTheme(){
             document.body.setAttribute("data-theme",this.currentTheme);
         },
-        async handleLogout(){
-            await this.authStore.logout();
-        }
     }
     };
 </script>

@@ -1,11 +1,9 @@
 <script setup>
 import BaseButton from '@/components/ui/BaseButton.vue';
 import BaseInput from '@/components/ui/BaseInput.vue';
-import { RouterLink } from 'vue-router';
-
 </script>
 <template>
-    <form class="text-textColor h-fit flex flex-col gap-6 p-4 border-4 border-textColor min-w-80">
+    <form class="text-textColor h-fit flex flex-col gap-6 p-4 border-4 border-textColor min-w-80 rounded-lg">
         <div>
             <h5 class="text-center">Log In</h5>
             <hr class="">
@@ -21,13 +19,14 @@ import { RouterLink } from 'vue-router';
             v-model="password"
             label="Password :"
             type="password"
+            placeholder="******"
             :error="authError"
             required
         />
 
         <div class="flex flex-col gap-2 justify-center">
             <BaseButton @click="handleLogin" :disalbed="isLoading">{{isLoading ? 'Loading...' : 'Submit'}}</BaseButton>
-            <div class="text-secondary">You don't have an account <span><RouterLink class="text-textColor" to="/signup">Sign Up</RouterLink></span></div>
+            <div class="text-secondary">You don't have an account <span class="text-textColor font-bold"><RouterLink to="/signup">Sign Up</RouterLink></span></div>
         </div>
 
     </form>
@@ -49,6 +48,9 @@ export default {
     computed: {
         authStore(){
             return useAuthStore();
+        },
+        router(){
+            return useRouter();
         }
     },
     watch:{
@@ -70,8 +72,8 @@ export default {
             await this.authStore.login(this.email, this.password);
 
 
-            this.authStore.clearError();
             this.isLoading = false;
+            this.router.push('/');
         }
     }
 }

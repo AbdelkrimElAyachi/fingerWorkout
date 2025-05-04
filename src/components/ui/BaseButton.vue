@@ -20,7 +20,7 @@
       variant: {
         type: String,
         default: 'primary',
-        validator: (value) => ['primary', 'secondary', 'outline', 'text'].includes(value)
+        validator: (value) => ['primary', 'secondary', 'danger', 'outline', 'text'].includes(value)
       },
       size: {
         type: String,
@@ -50,6 +50,7 @@
         const variants = {
           primary: 'bg-primary text-backgroundColor hover:opacity-50 focus:ring-gray-500',
           secondary: 'bg-secondary text-white hover:bg-secondary/50 focus:ring-gray-500',
+          danger: 'bg-error text-white hover:bg-error/50 focus:ring-gray-500',
           outline: 'border border-primary bg-backgroundColor text-textColor hover:opacity-50 focus:ring-gray-500',
           text: 'text-textColor hover:text-textColor/50 focus:ring-gray-500 bg-transparent'
         }
