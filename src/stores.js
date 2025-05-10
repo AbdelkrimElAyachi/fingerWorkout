@@ -1,13 +1,5 @@
 import { defineStore } from "pinia";
 import { piniaInstance, sounds } from "@/globals";
-import { auth } from "@/fireabase.js";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  sendEmailVerification,
-  onAuthStateChanged
-} from 'firebase/auth';
 
 
 // sound store used to store the parameter of the tests sound effects
@@ -57,8 +49,6 @@ const useParameterStore = defineStore("parameter", {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
-    authIsReady: false,
-    error: null,
   }),
 
   getters: {
@@ -68,60 +58,23 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async initializeAuth() {
-      return new Promise((resolve) => {
-        onAuthStateChanged(auth, (user) => {
-          this.user = user;
-          this.authIsReady = true;
-          resolve(user);
-        });
-      });
     },
 
     async signUp(email, password) {
-      this.error = null;
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        this.user = userCredential.user;
-        await this.sendVerificationEmail();
-        return userCredential;
-      } catch (err) {
-        this.error = this.getFirebaseError(err.message);
-      }
     },
 
     async login(email, password) {
-      this.error = null;
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
-        this.user = userCredential.user;
-        return userCredential;
-      } catch (err) {
-        this.error = this.getFirebaseError(err.message);
-      }
     },
 
     async logout() {
-      try {
-        await signOut(auth);
-        this.user = null;
-      } catch (err) {
-        this.error = this.getFirebaseError(err.message);
-      }
     },
 
     async sendVerificationEmail() {
-      if (!auth.currentUser) throw new Error('No authenticated user');
-      
-      try {
-        await sendEmailVerification(auth.currentUser);
-      } catch (err) {
-        this.error = this.getFirebaseError(err.message);
-      }
     },
 
 
     // In your authStore.js
-    getFirebaseError(errorCode) {
+    getErrorMessage(errorCode) {
       const errorMap = {
         'Firebase: Error (auth/invalid-credential).': 'Invalid email or password',
         'Firebase: Error (auth/invalid-email).': 'Please enter a valid email address',
@@ -136,9 +89,6 @@ export const useAuthStore = defineStore('auth', {
       return errorMap[errorCode] || 'An unexpected error occurred. Please try again.';
     },
 
-    clearError() {
-      this.error = null;
-    }
   }
 });
 
