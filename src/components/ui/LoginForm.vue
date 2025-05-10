@@ -1,7 +1,3 @@
-<script setup>
-import BaseButton from '@/components/ui/BaseButton.vue';
-import BaseInput from '@/components/ui/BaseInput.vue';
-</script>
 <template>
     <form class="text-textColor h-fit flex flex-col gap-6 p-4 border-4 border-textColor min-w-80 rounded-lg">
         <div>
@@ -13,6 +9,7 @@ import BaseInput from '@/components/ui/BaseInput.vue';
             label="Email Address :"
             type="email"
             placeholder="your@email.com"
+            :error="emailError"
             required
         />
         <BaseInput
@@ -32,48 +29,58 @@ import BaseInput from '@/components/ui/BaseInput.vue';
     </form>
 </template>
 <script>
+import BaseButton from '@/components/ui/BaseButton.vue';
+import BaseInput from '@/components/ui/BaseInput.vue';
 import { useAuthStore } from '../../stores';
-import { useRouter } from 'vue-router';
+import { login } from '@/utils/auth';
 
 
 export default {
     data(){
         return {
             email:"",
+            emailError:"",
             password: "",
             authError:"",
             isLoading: false,
         }
     },
+    components:{
+        BaseButton,
+        BaseInput
+    },
     computed: {
         authStore(){
             return useAuthStore();
         },
-        router(){
-            return useRouter();
-        }
-    },
-    watch:{
-        'authStore.error'(newError){
-            if(newError){
-                this.authError = newError;
-                this.authStore.clearError();
-            }
-        }
     },
     methods:{
         async handleLogin(){
+            this.authError = '';
+            this.emailError = '';
+
             if(!this.email || !this.password){
                 this.authError = 'Please fill in all fields'
+                return ;
             }
             this.isLoading = true;
-            this.authError = '';
 
-            await this.authStore.login(this.email, this.password);
+            const res = await login(this.email, this.password);
+            if(!res.success){
+                if(res.errors.validationErrors){
+                    console.log(res.errors.validationErrors['email']);
+                    this.emailError = res.errors.validationErrors['email'];
+                    this.authError = res.errors.validationErrors['password'];
+                }
+                else{
+                    this.authError = res.errors.authError;
+                }
+                return ;
+            }
 
 
             this.isLoading = false;
-            this.router.push('/');
+            this.$router.push('/');
         }
     }
 }
