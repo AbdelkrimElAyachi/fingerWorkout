@@ -9,11 +9,10 @@ import BaseButton from '@/components/ui/BaseButton.vue';
         <Header/>
         <div class="flex gap-16 w-10/12 mx-auto mt-12">
             <div class="w-3/12 p-6">
-                <img v-if="photoUrl" class="rounded-full" :src="photoUrl" alt="avatar">
-                <img v-else-if="user.photoUrl" class="rounded-full" :src="user.photoUrl" alt="avatar">
+                <img v-if="picture" class="rounded-full" :src="photoUrl" alt="avatar">
                 <img v-else src="/assets/avatar.webp" class="rounded-full" alt="avatar">
                 <h4 class="text-center mt-6">
-                    {{ user.displayName || 'User' }}
+                    {{ name|| 'User' }}
                 </h4>
             </div>
             <div class="w-7/12 flex flex-col gap-16 px-12 py-6 rounded-2xl" style="box-shadow: 1px 1px 1px 1px var(--color-text)">
@@ -27,63 +26,71 @@ import BaseButton from '@/components/ui/BaseButton.vue';
                     </div>
                 </div>
                 <hr>
-                <BaseButton @click="handleLogout" variant="danger" :disalbed="isLoading">{{isLoading ? 'Logging out...' : 'Log out'}}</BaseButton>
+                <div class="flex flex-col gap-4">
+                    <BaseButton v-if="editMode" @click="save" variant="primary">Save</BaseButton>
+                    <BaseButton v-else @click="activateEditMode" variant="primary">Edit</BaseButton>
+                    <BaseButton @click="handleLogout" variant="danger" :disalbed="isLoading">{{isLoading ? 'Logging out...' : 'Log out'}}</BaseButton>
+                </div>
             </div>
         </div>
     </main> 
 </template>
 <script>
 import { useAuthStore } from '@/stores';
-import { useRouter } from 'vue-router';
+import {ref} from 'vue';
+
 
 export default {
     data(){
         return{
-            user: {},
-            displayName: null,
-            photoUrl: null,
+            name: null,
             email: null,
-            password: null,
+            picture: null,
+            newPassword: null,
+            editMode: false,
             isLoading: false,
         }
     },
     computed: {
         authStore(){
             return useAuthStore();
-        },
-        router(){
-            return useRouter();
-        }
-    },
-    watch:{
-        'authStore.user'(user){
-            this.user = user;
         }
     },
     async created(){
-        this.user = this.authStore.user;
-        if(!this.user){
-            this.router.push('/login');
+        if(!this.authStore.email){
+            this.$router.push('/login');
         }
+        this.email = this.authStore.email;
+        this.name = this.authStore.name;
+        this.picture = this.authStore.picture;
     },
     methods:{
         async handleLogout(){
             this.isLoading = true;
-            await this.authStore.logout();
+            await this.authStore.clear();
             this.isLoading = false;
-            this.router.push('/');
+            this.$router.push('/');
         },
         handlePhotoChange(event){
             this.previewImage(event);
             // handle 
+            const selectedFile = event.target.files[0];
+            if(selectedFile){
+                this.picture = selectedFile;
+            }
+        },
+        async uploadFile(){
+        },
+        activateEditMode(){
+            this.editMode = true;
         },
         previewImage(event){
             const file = event.target.files[0];
             if(!file) return ;
 
-            this.photoUrl = URL.createObjectURL(file);
+            this.picture = URL.createObjectURL(file);
             this.$once('hook:beforeDestroy', ()=>{
-                URL.revokeObjectURL(this.photoUrl);
+                URL.revokeObjectURL(this.picture);
             })
         }
     }

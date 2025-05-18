@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { piniaInstance, sounds } from "@/globals";
+import { getUser } from "./utils/auth";
+import { markRaw, toRaw } from "vue";
 
 
 // sound store used to store the parameter of the tests sound effects
@@ -46,50 +48,52 @@ const useParameterStore = defineStore("parameter", {
 // authIsReady: (default : false)
 // erorr: (default : null)
 // loading: (default : false)
+
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null,
+    name : null,
+    email : null,
+    picture : null,
+    token : null
   }),
 
   getters: {
-    isAuthenticated: (state) => !!state.user,
     isEmailVerified: (state) => state.user?.emailVerified || false
   },
 
   actions: {
-    async initializeAuth() {
+    async initializeAuth(){
+      if(this.user){
+        return;
+      }
+      else{
+        const res = await getUser();
+        if(res){
+          this.name = res.name;
+          this.email = res.email;
+          this.picture = res.picture;
+        }
+      }
     },
 
-    async signUp(email, password) {
+    async isAuthenticated(){
+      await this.initializeAuth();
+      return !!this.user;
     },
 
-    async login(email, password) {
+    setUser(user, token) {
+      localStorage.setItem("auth_token",token);
+      this.user = user;
+      this.token = token;
     },
 
-    async logout() {
+    clear() {
+      this.user = null;
+      this.token = null;
+      localStorage.removeItem("auth_token");
     },
 
-    async sendVerificationEmail() {
-    },
-
-
-    // In your authStore.js
-    getErrorMessage(errorCode) {
-      const errorMap = {
-        'Firebase: Error (auth/invalid-credential).': 'Invalid email or password',
-        'Firebase: Error (auth/invalid-email).': 'Please enter a valid email address',
-        'Firebase: Error (auth/user-disabled).': 'This account has been disabled',
-        'Firebase: Error (auth/user-not-found).': 'No account found with this email',
-        'Firebase: Error (auth/wrong-password).': 'Incorrect password',
-        'Firebase: Error (auth/too-many-requests).': 'Too many attempts. Please try again later',
-        'Firebase: Error (auth/email-already-in-use).': 'This email is already registered',
-        'Firebase: Error (auth/weak-password).': 'Password should be at least 6 characters'
-      };
-      
-      return errorMap[errorCode] || 'An unexpected error occurred. Please try again.';
-    },
-
-  }
+  },
 });
 
 export { useSoundStore, useParameterStore };

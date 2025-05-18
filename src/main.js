@@ -6,14 +6,14 @@ import routes from '@/routes.js';
 import App from '@/App.vue';
 import { clickOutside } from '@/globals';
 import { useAuthStore } from '@/stores';
-import { login } from '@/utils/auth';
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
 })
 
-login();
+const authStore = useAuthStore();
+await authStore.initializeAuth();
 
 const app = createApp(App);
 app.use(router).use(piniaInstance);

@@ -10,6 +10,14 @@ import BaseInput from '@/components/ui/BaseInput.vue';
             <hr class="">
         </div>
         <BaseInput
+            v-model="name"
+            label="Display Name:"
+            type="text"
+            placeholder="your username"
+            :error="nameError"
+            required
+        />
+        <BaseInput
             v-model="email"
             label="Email Address :"
             type="email"
@@ -36,10 +44,13 @@ import BaseInput from '@/components/ui/BaseInput.vue';
 <script>
 import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../../stores';
+import { register, login } from '@/utils/auth';
 
 export default {
     data(){
         return {
+            name:"",
+            nameError:"",
             email:"",
             emailError:"",
             password: "",
@@ -50,9 +61,6 @@ export default {
     computed: {
         authStore(){
             return useAuthStore();
-        },
-        router(){
-            return useRouter();
         }
     },
     watch:{
@@ -73,16 +81,43 @@ export default {
     methods:{
         async handleSignup(e){
             e.preventDefault();
-            if(!this.email || !this.password){
-                this.passwordError = 'Please fill in all fields'
+            this.nameError = "";
+            this.emailError = "";
+            this.passwordError = "";
+
+            if(!this.name){
+                this.nameError = 'Please fill in name';
             }
+            if(!this.email){
+                this.emailError = 'Please fill in email';
+            }
+            if(!this.password){
+                this.passwordError =  'Please fill in password';
+            }
+            if(!this.name || !this.email || !this.password){
+                return;
+            }
+
             this.isLoading = true;
-            this.passwordError = '';
 
-            await this.authStore.signUp(this.email, this.password);
-
+            const res = await register(this.name, this.email, this.password);
+            if(!res.success){
+                if(res.errors.validationErrors){
+                    this.emailError = res.errors.validationErrors['email'];
+                    this.authError = res.errors.validationErrors['password'];
+                    this.nameError = res.errors.validationErrors['name'];
+                }
+                else{
+                    this.authError = res.errors.authError;
+                }
+                this.isLoading = false;
+                return ;
+            }
+            const resLogin = await login(this.email, this.password);
+            
+            this.authStore.setUser(resLogin.user, resLogin.token);
             this.isLoading = false;
-            this.router.push('/');
+            this.$router.push('/');
         }
     }
 }

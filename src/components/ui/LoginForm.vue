@@ -68,17 +68,17 @@ export default {
             const res = await login(this.email, this.password);
             if(!res.success){
                 if(res.errors.validationErrors){
-                    console.log(res.errors.validationErrors['email']);
                     this.emailError = res.errors.validationErrors['email'];
                     this.authError = res.errors.validationErrors['password'];
                 }
                 else{
                     this.authError = res.errors.authError;
                 }
+                this.isLoading = false;
                 return ;
             }
 
-
+            this.authStore.setUser(res.user, res.token);
             this.isLoading = false;
             this.$router.push('/');
         }

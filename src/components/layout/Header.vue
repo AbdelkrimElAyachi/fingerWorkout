@@ -49,12 +49,12 @@
                         <span class="link_text" >Contribute</span>
                     </RouterLink>
                 </li>
-                <li v-if="!user" class="hover:text-primary hover:border-b-4 border-primary">
+                <li v-if="!isAuthenticated" class="hover:text-primary hover:border-b-4 border-primary">
                     <RouterLink to="/login">
                         <span class="link_text" >Log In</span>
                     </RouterLink>
                 </li>
-                <li v-if="user" class="hover:text-primary hover:border-b-4 border-primary">
+                <li v-else class="hover:text-primary hover:border-b-4 border-primary">
                     <RouterLink to="/profile">
                         <button class="link_text" >Profile</button>
                     </RouterLink>
@@ -72,7 +72,7 @@ export default {
         return {
             dropDownOpen:false,
             currentTheme:"default",
-            user:null,
+            isAuthenticated:null,
         };
     },
     computed: {
@@ -80,14 +80,9 @@ export default {
             return useAuthStore();
         }
     },
-    watch:{
-        'authStore.user'(user){
-            this.user = user;
-        }
-    },
     async created(){
         this.currentTheme = document.body.getAttribute("data-theme");
-        this.user = this.authStore.user;
+        this.isAuthenticated = !!this.authStore.email;
     },
     methods: {
         toggleDropDown(){

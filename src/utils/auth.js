@@ -33,8 +33,7 @@ const login = async (email, password)=>{
             }
             return {success:false,errors:errors};
         }
-        localStorage.setItem('token',data.token);
-        return {success:true};
+        return data;
     }
     catch(error){
         console.log("Error fetching data : ",error);
@@ -42,5 +41,81 @@ const login = async (email, password)=>{
 }
 
 
+const register = async (name, email, password)=>{
+    try{
+        const res = await fetch(`${api_url}/user/register`,{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({
+                name: name,
+                email: email,
+                password: password
+            })
+        })
+        const data = await res.json();
+        if(!data?.success){
+            const errors = {};
+            if(data?.issues){
+                errors['validationErrors'] = getValidationsMessagesBasedOnFields(data);
+            }
+            if(data?.message){
+                errors['authError'] = data?.message
+            }
+            return {success:false,errors:errors};
+        }
+        return data;
+    }
+    catch(error){
+        console.log("Error fetching data : ",error);
+    }
+}
 
-export {login, getValidationsMessagesBasedOnFields};
+const uploadProfilePicture = async(file)=>{
+    if(!this.file){
+        return ;
+    }
+    const formData = new FormData();
+    formData.append('file',file);
+
+    try{
+        const res = await fetch(`${api_url}/upload`,{
+            method:'POST',
+            body: formData
+        })
+
+        const data = await res.json();
+        console.log(data);
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+
+const getUser = async ()=>{
+    const token = localStorage.getItem('auth_token');
+    if(!token){
+        return false;
+    }
+    try{
+        const res = await fetch(`${api_url}/profile`,{
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`
+            }
+        });
+        const data = await res.json();
+        if(!data.success){
+            return false;
+        }
+        return data.user;
+    }
+    catch(error){
+        console.log("Error fetching data : ",error);
+    }  
+}
+
+export {login, register, getUser};
