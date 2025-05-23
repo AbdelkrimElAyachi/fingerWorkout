@@ -72,17 +72,16 @@ export default {
         return {
             dropDownOpen:false,
             currentTheme:"default",
-            isAuthenticated:null,
         };
     },
     computed: {
-        authStore(){
-            return useAuthStore();
+        isAuthenticated(){
+            const authStore = useAuthStore();
+            return !!authStore.email;
         }
     },
     async created(){
         this.currentTheme = document.body.getAttribute("data-theme");
-        this.isAuthenticated = !!this.authStore.email;
     },
     methods: {
         toggleDropDown(){
