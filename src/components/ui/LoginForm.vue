@@ -56,6 +56,7 @@ export default {
     },
     methods:{
         async handleLogin(){
+            let res;
             this.authError = '';
             this.emailError = '';
 
@@ -63,10 +64,17 @@ export default {
                 this.authError = 'Please fill in all fields'
                 return ;
             }
-            this.isLoading = true;
 
-            const res = await login(this.email, this.password);
-            if(!res.success){
+            this.isLoading = true;
+            try{
+                res = await login(this.email, this.password);
+            }
+            catch(error){
+                this.authError = "Sorry an unexpecated error happened, try again later"
+                this.isLoading = false;
+                return;
+            }
+            if(!res?.success){
                 if(res.errors.validationErrors){
                     this.emailError = res.errors.validationErrors['email'];
                     this.authError = res.errors.validationErrors['password'];

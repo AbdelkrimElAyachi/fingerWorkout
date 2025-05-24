@@ -80,6 +80,7 @@ export default {
     },
     methods:{
         async handleSignup(e){
+            let res;
             e.preventDefault();
             this.nameError = "";
             this.emailError = "";
@@ -100,7 +101,14 @@ export default {
 
             this.isLoading = true;
 
-            const res = await register(this.name, this.email, this.password);
+            try{
+                res = await register(this.name, this.email, this.password);
+            }
+            catch(error){
+                this.passwordError = "Sorry, an unexpected error happened, try again later"; 
+                this.isLoading = false;
+                return;
+            }
             if(!res.success){
                 if(res.errors.validationErrors){
                     this.emailError = res.errors.validationErrors['email'];

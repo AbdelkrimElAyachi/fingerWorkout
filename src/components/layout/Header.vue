@@ -1,3 +1,8 @@
+<script setup>
+import { useAuthStore } from '@/stores';
+const authStore = useAuthStore();
+</script>
+
 <template>
     <header class="flex justify-between w-5/6 p-10 text-2xl mx-auto">
         <div  class="menu" >
@@ -49,7 +54,7 @@
                         <span class="link_text" >Contribute</span>
                     </RouterLink>
                 </li>
-                <li v-if="!isAuthenticated" class="hover:text-primary hover:border-b-4 border-primary">
+                <li v-if="!authStore.isAuthenticated" class="hover:text-primary hover:border-b-4 border-primary">
                     <RouterLink to="/login">
                         <span class="link_text" >Log In</span>
                     </RouterLink>
@@ -65,7 +70,6 @@
 </template>
 
 <script>
-import { useAuthStore } from '@/stores';
 
 export default {
     data() {
@@ -73,12 +77,6 @@ export default {
             dropDownOpen:false,
             currentTheme:"default",
         };
-    },
-    computed: {
-        isAuthenticated(){
-            const authStore = useAuthStore();
-            return !!authStore.email;
-        }
     },
     async created(){
         this.currentTheme = document.body.getAttribute("data-theme");

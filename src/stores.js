@@ -54,11 +54,15 @@ export const useAuthStore = defineStore('auth', {
     name : null,
     email : null,
     picture : null,
-    token : null
+    token : null,
+    authenticated: false
   }),
 
   getters: {
-    isEmailVerified: (state) => state.user?.emailVerified || false
+    isAuthenticated: (state) => state.authenticated,
+    getPicture: (state) => state.picture,
+    getEmail: (state) => state.email,
+    getName: (state) => state.name,
   },
 
   actions: {
@@ -72,23 +76,25 @@ export const useAuthStore = defineStore('auth', {
           this.name = res.name;
           this.email = res.email;
           this.picture = res.picture;
+          this.authenticated = true;
         }
       }
     },
 
-    async isAuthenticated(){
-      await this.initializeAuth();
-      return !!this.user;
-    },
-
     setUser(user, token) {
       localStorage.setItem("auth_token",token);
-      this.user = user;
+      this.name = user?.name;
+      this.email = user.email;
+      this.picture = user?.picture;
       this.token = token;
+      this.authenticated = true;
     },
 
     clear() {
-      this.user = null;
+      this.name = null;
+      this.email = null;
+      this.picture = null;
+      this.authenticated = false;
       this.token = null;
       localStorage.removeItem("auth_token");
     },

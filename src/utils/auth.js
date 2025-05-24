@@ -36,7 +36,7 @@ const login = async (email, password)=>{
         return data;
     }
     catch(error){
-        console.log("Error fetching data : ",error);
+        throw Error("Error establishing connection : "+error)
     }
 }
 
@@ -68,7 +68,7 @@ const register = async (name, email, password)=>{
         return data;
     }
     catch(error){
-        console.log("Error fetching data : ",error);
+        throw Error("")
     }
 }
 
@@ -89,7 +89,7 @@ const uploadProfilePicture = async(file)=>{
         console.log(data);
     }
     catch(err){
-        console.log(err);
+        throw Error("Error establishing connection : "+error)
     }
 }
 
