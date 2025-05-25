@@ -68,28 +68,40 @@ const register = async (name, email, password)=>{
         return data;
     }
     catch(error){
-        throw Error("")
+        throw Error("Error establishing connection : "+error)
     }
 }
 
-const uploadProfilePicture = async(file)=>{
-    if(!this.file){
-        return ;
+export const updateProfile = async(formData)=>{
+    const token = localStorage.getItem('auth_token');
+    if(!token){
+        return false;
     }
-    const formData = new FormData();
-    formData.append('file',file);
-
     try{
-        const res = await fetch(`${api_url}/upload`,{
+        const res = await fetch(`${api_url}/profile/update`,{
             method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`
+            },
             body: formData
         })
-
         const data = await res.json();
-        console.log(data);
+        if(!data?.success){
+            const errors = {};
+            if(data?.issues){
+                errors['validationErrors'] = getValidationsMessagesBasedOnFields(data);
+            }
+            if(data?.message){
+                errors['authError'] = data?.message
+            }
+            return {success:false,errors:errors};
+        }
+        return data;
     }
     catch(err){
-        throw Error("Error establishing connection : "+error)
+        console.log(err)
+        throw Error("Error establishing connection : "+err)
     }
 }
 
