@@ -1,4 +1,4 @@
-const api_url = import.meta.env.VITE_API_URL;
+import { api_url } from "@/globals";
 
 function getValidationsMessagesBasedOnFields(data){
     const messages = {};
@@ -12,7 +12,7 @@ function getValidationsMessagesBasedOnFields(data){
 
 const login = async (email, password)=>{
     try{
-        const res = await fetch(`${api_url}/user/login`,{
+        const res = await fetch(`${api_url}/json/user/login`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -43,7 +43,7 @@ const login = async (email, password)=>{
 
 const register = async (name, email, password)=>{
     try{
-        const res = await fetch(`${api_url}/user/register`,{
+        const res = await fetch(`${api_url}/json/user/register`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -81,7 +81,7 @@ export const updateProfile = async(formData)=>{
         const res = await fetch(`${api_url}/profile/update`,{
             method:'POST',
             headers:{
-                'Content-Type':'application/json',
+                // dont set the content-type manuall to multipart/form-data the browser will do it better than you
                 'Authorization':`Bearer ${token}`
             },
             body: formData
@@ -112,7 +112,7 @@ const getUser = async ()=>{
         return false;
     }
     try{
-        const res = await fetch(`${api_url}/profile`,{
+        const res = await fetch(`${api_url}/json/profile`,{
             method:'GET',
             headers:{
                 'Content-Type':'application/json',

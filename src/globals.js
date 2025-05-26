@@ -1,6 +1,6 @@
 import { createPinia } from "pinia";
 export const piniaInstance = createPinia();
-
+export const api_url = import.meta.env.VITE_API_URL;
 
 export const sounds = [
   "cherryBlue",

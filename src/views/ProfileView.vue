@@ -6,7 +6,8 @@
                 <input ref="pictureInput" type="file" name="file" @change="handlePictureChange">
             </div>
             <div v-if="editMode" class="w-4/12 p-6 max-h-96 relative group">
-                <img v-if="picture" class="rounded-full h-full object-cover group-hover:opacity-50" :src="picture" alt="avatar">
+                <img v-if="editedPicture" class="rounded-full h-full object-cover group-hover:opacity-50" :src="picture" alt="avatar">
+                <img v-else-if="picture" class="rounded-full h-full object-cover group-hover:opacity-50" :src="apiUrl+'/uploads/'+picture" alt="avatar">
                 <img v-else src="/assets/avatar.webp" class="rounded-full h-full object-cover group-hover:opacity-50" alt="avatar">
                 <div
                     class="absolute inset-0 opacity-0 flex items-center justify-center group-hover:opacity-50"
@@ -16,7 +17,7 @@
                 </div>
             </div>
             <div v-else class="w-4/12 p-6 mx-auto mt-12">
-                <img v-if="picture" class="rounded-full h-full object-cover" :src="picture" alt="avatar">
+                <img v-if="picture" class="rounded-full h-full object-cover" :src="apiUrl+'/uploads/'+picture" alt="avatar">
                 <img v-else src="/assets/avatar.webp" class="rounded-full" alt="avatar">
             </div>
             <div class="w-7/12 flex flex-col gap-16 px-12 py-6 rounded-2xl" style="box-shadow: 1px 1px 1px 1px var(--color-text)">
@@ -80,7 +81,7 @@ import BaseInput from '@/components/ui/BaseInput.vue';
 import BaseButton from '@/components/ui/BaseButton.vue';
 import { useAuthStore } from '@/stores';
 import { updateProfile } from '@/utils/auth';
-
+import { api_url } from "@/globals";
 
 export default {
     data(){
@@ -92,11 +93,13 @@ export default {
             picture: null,
             pictureData: null,
             pictureError: null,
+            editedPicture: false,
             newPassword: null,
             verifyNewPassword: null,
             newPasswordError: null,
             editMode: false,
             isLoading: false,
+            apiUrl: api_url,
         }
     },
     components:{
@@ -139,6 +142,7 @@ export default {
         previewImage(event){
             const file = event.target.files[0];
             if(!file) return ;
+            this.editedPicture = true;
             this.picture = URL.createObjectURL(file);
         },
         // state handling
@@ -178,6 +182,7 @@ export default {
             this.isLoading = true;
             try{
                 res = await updateProfile(formData);
+                console.log(res);
             }
             catch(error){
                 this.newPasswordError = "Sorry an unexpecated error happened, try again later"
@@ -186,26 +191,28 @@ export default {
             }
             if(!res?.success){
                 if(res.errors.validationErrors){
+                    this.nameError = res.errors.validationErrors['name'];
                     this.emailError = res.errors.validationErrors['email'];
-                    this.authError = res.errors.validationErrors['password'];
+                    this.newPasswordError = res.errors.validationErrors['password'];
                 }
                 else{
-                    this.authError = res.errors.authError;
+                    this.newPasswordError = res.errors.authError;
                 }
                 this.isLoading = false;
                 return ;
             }
 
             this.authStore.setUser(res.user, false);
+            this.isLoading = false;
             this.editMode = false;
+            this.editedPicture = false;
         },
         annuler(){
-            console.log("annuler was clicked");
-            console.log(this.newPassword);
             this.name = this.authStore.name;
             this.email = this.authStore.email;
             this.picture = this.authStore.picture;
             this.editMode = false;
+            this.editedPicture = false;
         },
         onUnmounted(){
             URL.revokeObjectURL(this.picture);
