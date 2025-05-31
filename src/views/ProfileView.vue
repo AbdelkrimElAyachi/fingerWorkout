@@ -16,7 +16,7 @@
                     <p class="text-xl font-bold" >choose image</p>
                 </div>
             </div>
-            <div v-else class="w-4/12 p-6 mx-auto mt-12">
+            <div v-else class="w-4/12 p-6 mx-auto mt-12 max-h-96">
                 <img v-if="picture" class="rounded-full h-full object-cover" :src="apiUrl+'/uploads/'+picture" alt="avatar">
                 <img v-else src="/assets/avatar.webp" class="rounded-full" alt="avatar">
             </div>
@@ -38,7 +38,12 @@
                         :error="emailError"
                         required 
                     />
+                    <div class="flex items-center">
+                        <input for="includePassword" id="incluePassword" name="includePassword" v-model="includePassword" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="includePassword" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Update Password</label>
+                    </div>
                     <BaseInput 
+                        v-if="includePassword"
                         v-model="newPassword"
                         label=""
                         type="password"
@@ -47,6 +52,7 @@
                         required 
                     />
                     <BaseInput 
+                        v-if="includePassword"
                         v-model="verifyNewPassword"
                         label=""
                         type="password"
@@ -98,6 +104,7 @@ export default {
             verifyNewPassword: null,
             newPasswordError: null,
             editMode: false,
+            includePassword: false,
             isLoading: false,
             apiUrl: api_url,
         }
@@ -161,11 +168,11 @@ export default {
                 this.emailError = "The field email is required";
                 isValid = false;
             }
-            if(!this.newPassword){
+            if(this.includePassword && !this.newPassword){
                 this.newPasswordError = "The field password is required";
                 isValid = false;
             }
-            if(this.newPassword != this.verifyNewPassword){
+            if(this.includePassword && this.newPassword != this.verifyNewPassword){
                 this.newPasswordError = "The password does not match";
                 isValid = false;
             }
@@ -176,7 +183,9 @@ export default {
 
             formData.append('name',this.name);
             formData.append('email',this.email);
-            formData.append('password',this.newPassword);
+            if(this.includePassword){
+                formData.append('password',this.newPassword);
+            }
             formData.append('picture',this.pictureData);
 
             this.isLoading = true;
@@ -206,6 +215,7 @@ export default {
             this.isLoading = false;
             this.editMode = false;
             this.editedPicture = false;
+            this.picture = this.authStore.picture;
         },
         annuler(){
             this.name = this.authStore.name;

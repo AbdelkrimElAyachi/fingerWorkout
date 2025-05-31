@@ -23,8 +23,8 @@
         --color-white: #fff;
     }
     body[data-theme='light']{
-        --color-bg: #fff;
-        --color-text: #246;
+        --color-bg: #0F172A;
+        --color-text: #97bdff;
         --color-primary: #3d85fe;
         --color-secondary: #5f5f5f;
         --color-error: #ff3333;
