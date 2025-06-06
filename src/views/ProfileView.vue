@@ -83,8 +83,8 @@
 </template>
 <script>
 import Header from '@/components/layout/Header.vue';
-import BaseInput from '@/components/ui/BaseInput.vue';
-import BaseButton from '@/components/ui/BaseButton.vue';
+import BaseInput from '@/components/base/BaseInput.vue';
+import BaseButton from '@/components/base/BaseButton.vue';
 import { useAuthStore } from '@/stores';
 import { updateProfile } from '@/utils/auth';
 import { api_url } from "@/globals";

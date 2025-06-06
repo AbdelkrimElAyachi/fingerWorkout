@@ -29,9 +29,9 @@
     </form>
 </template>
 <script>
-import BaseButton from '@/components/ui/BaseButton.vue';
-import BaseInput from '@/components/ui/BaseInput.vue';
-import { useAuthStore } from '../../stores';
+import BaseButton from '@/components/base/BaseButton.vue';
+import BaseInput from '@/components/base/BaseInput.vue';
+import { useAuthStore } from '@/stores';
 import { login } from '@/utils/auth';
 
 

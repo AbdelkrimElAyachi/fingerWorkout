@@ -1,6 +1,6 @@
 <script setup>
-import BaseButton from '@/components/ui/BaseButton.vue';
-import BaseInput from '@/components/ui/BaseInput.vue';
+import BaseButton from '@/components/base/BaseButton.vue';
+import BaseInput from '@/components/base/BaseInput.vue';
 </script>
 
 <template>
@@ -122,6 +122,7 @@ export default {
                 return ;
             }
             const resLogin = await login(this.email, this.password);
+            console.log(resLogin);
             
             this.authStore.setUser(resLogin.user, resLogin.token);
             this.isLoading = false;

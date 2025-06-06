@@ -1,6 +1,6 @@
 <script setup>
 import Header from "@/components/layout/Header.vue";
-import LoginForm from '@/components/ui/LoginForm.vue';
+import LoginForm from '@/components/auth/LoginForm.vue';
 </script>
 <template>
   <main class="main-container bg-backgroundColor min-h-screen text-textColor">

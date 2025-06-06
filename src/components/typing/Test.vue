@@ -21,12 +21,12 @@
   
 <script>
 
-  import Timer from '@/components/ui/Timer.vue'
-  import RealTimeDisplayer from '@/components/ui/RealTimeDisplayer.vue'
-  import TypingArea from '@/components/ui/TypingArea.vue'
-  import Popup from '@/components/ui/Popup.vue'
+  import Timer from '@/components/base/Timer.vue'
+  import RealTimeDisplayer from '@/components/typing/RealTimeDisplayer.vue'
+  import TypingArea from '@/components/typing/TypingArea.vue'
+  import Popup from '@/components/feedback/Popup.vue'
   import { getPhrases, shuffleArray } from "@/utils/phrases.js"
-  import { useSoundStore, useParameterStore } from "@/stores.js"
+  import { useSoundStore, useParameterStore } from "@/stores"
   
   export default {
     components: { Timer, RealTimeDisplayer, TypingArea, Popup },

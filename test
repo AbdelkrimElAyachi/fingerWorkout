@@ -1,0 +1,35 @@
+src
+├── App.vue
+├── components
+│   ├── animations
+│   ├── layout
+│   │   ├── Footer.vue
+│   │   └── Header.vue
+│   ├── SoundParameters.vue
+│   ├── TestParameters.vue
+│   ├── Test.vue
+│   └── ui
+│       ├── BaseButton.vue
+│       ├── BaseInput.vue
+│       ├── LoginForm.vue
+│       ├── Popup.vue
+│       ├── RealTimeDisplayer.vue
+│       ├── SingUpForm.vue
+│       ├── Timer.vue
+│       └── TypingArea.vue
+├── globals.js
+├── main.js
+├── routes.js
+├── stores.js
+├── style.css
+├── utils
+│   ├── auth.js
+│   └── phrases.js
+└── views
+    ├── ContributeView.vue
+    ├── HomeView.vue
+    ├── LoginView.vue
+    ├── ProfileView.vue
+    └── SignupView.vue
+
+6 directories, 27 files

@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { useSoundStore } from "@/stores.js";
+import { useSoundStore } from "@/stores";
 import { sounds } from "@/globals.js";
 
 export default {
