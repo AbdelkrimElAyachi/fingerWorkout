@@ -155,6 +155,9 @@ export default {
         // state handling
         activateEditMode(){
             this.editMode = true;
+            this.nameError = "";
+            this.emailError = "";
+            this.newPasswordError = "";
         },
         async save(){
             let isValid = true;
@@ -205,7 +208,7 @@ export default {
                     this.newPasswordError = res.errors.validationErrors['password'];
                 }
                 else{
-                    this.newPasswordError = res.errors.authError;
+                    this.emailError = res.errors.authError;
                 }
                 this.isLoading = false;
                 return ;
