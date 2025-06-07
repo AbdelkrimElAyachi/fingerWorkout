@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import SoundParameters from "@/components/SoundParameters.vue";
-import TestParameters from "@/components/TestParameters.vue";
+import SoundParameters from "@/components/typing/SoundParameters.vue";
+import TestParameters from "@/components/typing/TestParameters.vue";
 
 export default {
     name:"Footer",

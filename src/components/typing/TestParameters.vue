@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { useParameterStore } from "@/stores.js";
+import { useParameterStore } from "@/stores";
 
 export default {
     name: "TestParameters",

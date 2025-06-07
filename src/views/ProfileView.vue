@@ -83,8 +83,8 @@
 </template>
 <script>
 import Header from '@/components/layout/Header.vue';
-import BaseInput from '@/components/ui/BaseInput.vue';
-import BaseButton from '@/components/ui/BaseButton.vue';
+import BaseInput from '@/components/base/BaseInput.vue';
+import BaseButton from '@/components/base/BaseButton.vue';
 import { useAuthStore } from '@/stores';
 import { updateProfile } from '@/utils/auth';
 import { api_url } from "@/globals";
@@ -155,6 +155,9 @@ export default {
         // state handling
         activateEditMode(){
             this.editMode = true;
+            this.nameError = "";
+            this.emailError = "";
+            this.newPasswordError = "";
         },
         async save(){
             let isValid = true;
@@ -205,7 +208,7 @@ export default {
                     this.newPasswordError = res.errors.validationErrors['password'];
                 }
                 else{
-                    this.newPasswordError = res.errors.authError;
+                    this.emailError = res.errors.authError;
                 }
                 this.isLoading = false;
                 return ;

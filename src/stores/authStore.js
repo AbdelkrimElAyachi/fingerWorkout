@@ -1,47 +1,6 @@
 import { defineStore } from "pinia";
 import { piniaInstance, sounds } from "@/globals";
-import { getUser } from "./utils/auth";
-import { markRaw, toRaw } from "vue";
-
-
-// sound store used to store the parameter of the tests sound effects
-// you can find the audio files contains the sounds in public/assets/sounds
-// sound : (deafult : 'keyboard')
-// sound level : (default : 25 )
-const useSoundStore = defineStore("sound", {
-  state: () => ({ sound: "keyboard", soundLevel: 25 }),
-
-  getters: {
-    getSound: (state) => state.sound,
-    getSoundLevel: (state) => state.soundLevel,
-  },
-
-  actions: {
-    setSound(value) {
-      this.sound = value;
-    },
-    setSoundLevel(value) {
-      this.soundLevel = value;
-    }
-  }
-})(piniaInstance);
-
-// parameter store used to store the tests parameter
-// duration : (default : 1)
-const useParameterStore = defineStore("parameter", {
-  state: () => ({ duration : 1 }),
-
-  getters: {
-    getDuration: (state) => state.duration,
-  },
-
-  actions: {
-    setDuration(value) {
-      this.duration = value;
-    }
-  }
-})(piniaInstance);
-
+import { getUser } from "../utils/auth";
 
 // auth store used to store the user auth process
 // user : (default : null)
@@ -103,5 +62,3 @@ export const useAuthStore = defineStore('auth', {
 
   },
 });
-
-export { useSoundStore, useParameterStore };
