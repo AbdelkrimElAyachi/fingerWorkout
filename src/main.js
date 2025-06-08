@@ -12,12 +12,15 @@ const router = createRouter({
   routes,
 })
 
-const authStore = useAuthStore();
-await authStore.initializeAuth();
+(async function(){
 
-const app = createApp(App);
-app.use(router).use(piniaInstance);
-app.mount('#app');
+  const authStore = useAuthStore();
+  await authStore.initializeAuth();
 
-// registre directovie
-app.directive('click-outside', clickOutside);
+  const app = createApp(App);
+  app.use(router).use(piniaInstance);
+  app.mount('#app');
+  
+  // registre directovie
+  app.directive('click-outside', clickOutside);
+})

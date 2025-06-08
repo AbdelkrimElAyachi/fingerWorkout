@@ -9,10 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "chart.js": "^4.4.9",
     "cloudinary": "^2.6.0",
     "firebase": "^11.6.1",
     "pinia": "^2.2.0",
     "vue": "^3.4.21",
+    "vue-chartjs": "^5.3.2",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
