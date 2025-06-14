@@ -12,7 +12,7 @@ function getValidationsMessagesBasedOnFields(data){
 
 const login = async (email, password)=>{
     try{
-        const res = await fetch(`${api_url}/json/user/login`,{
+        const res = await fetch(`${api_url}/json/login`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -43,7 +43,7 @@ const login = async (email, password)=>{
 
 const register = async (name, email, password)=>{
     try{
-        const res = await fetch(`${api_url}/json/user/register`,{
+        const res = await fetch(`${api_url}/json/register`,{
             method:'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -130,4 +130,42 @@ const getUser = async ()=>{
     }  
 }
 
-export {login, register, getUser};
+const saveTestResults = (numberCorrectCharacters, numberCorrectWords, numberWrongCharacters, numberWrongWords, duration)=>{
+    return new Promise(async (resolve, reject) => {
+        const token = localStorage.getItem('auth_token');
+        if(!token){
+            reject(false);
+        }
+        try{
+            let now = new Date().toISOString();
+            const res = await fetch(`${api_url}/json/test/save`,{
+            method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                    'Authorization':`Bearer ${token}`
+                },
+                body:JSON.stringify({
+                    numberCorrectCharacters:numberCorrectCharacters,
+                    numberCorrectWords:numberCorrectWords,
+                    numberWrongCharacters:numberWrongCharacters,
+                    numberWrongWords:numberWrongWords,
+                    duration:duration,
+                    datetime:now
+                })
+            });
+            const data = await res.json();
+            if(!data.success){
+                reject(false);
+            }
+            resolve(true);
+        }
+        catch(error){
+            console.log("Error fetching data : ",error);
+            reject(false);
+        }  
+    })
+}
+
+
+
+export {login, register, getUser, saveTestResults};

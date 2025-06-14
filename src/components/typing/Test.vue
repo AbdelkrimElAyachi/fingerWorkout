@@ -3,7 +3,6 @@
     <div class="mt-16 mx-auto text-secondary w-fit">
       <Timer 
         :timeLeft="timeLeft"
-        @time-up="handleTimeUp" 
       />
       
       <p ref="phrase" class="text-bold text-2xl leading-[3rem]"></p>
@@ -21,27 +20,25 @@
   
 <script>
 
-  import Timer from '@/components/base/Timer.vue'
-  import RealTimeDisplayer from '@/components/typing/RealTimeDisplayer.vue'
-  import TypingArea from '@/components/typing/TypingArea.vue'
-  import Popup from '@/components/feedback/Popup.vue'
-  import { getPhrases, shuffleArray } from "@/utils/phrases.js"
-  import { useSoundStore, useParameterStore } from "@/stores"
-  
-  export default {
+import Timer from '@/components/base/Timer.vue'
+import RealTimeDisplayer from '@/components/typing/RealTimeDisplayer.vue'
+import TypingArea from '@/components/typing/TypingArea.vue'
+import Popup from '@/components/feedback/Popup.vue'
+import { getPhrases, shuffleArray } from "@/utils/phrases.js"
+import { useSoundStore, useParameterStore } from "@/stores"
+import { saveTestResults } from '@/utils/auth'
+
+export default {
     components: { Timer, RealTimeDisplayer, TypingArea, Popup },
     props: {
-      items: { type: Array, required: true }
+        items: { type: Array, required: true }
     },
     data() {
-      return {
-        // audio
+        return {
         audioPath: "",
         audio: null, 
-        // text data
         phrases: [],
         currentText: [],
-        // indexes
         phraseIndex: 0,
         wordIndex: 0,
         charIndex: 0,
@@ -55,28 +52,27 @@
         // results
         showResults: false,
         results: {
-          wrongCharacters: 0,
-          wrongWords: 0,
-          correctCharacters: 0,
-          correctWords: 0,
-          duration: 1,
+            wrongCharacters: 0,
+            wrongWords: 0,
+            correctCharacters: 0,
+            correctWords: 0,
+            duration: 1,
         }
-      }
+        }
     },
     async mounted() {
-      document.addEventListener("keydown", this.buttonClicked)
-      this.results.duration = this.duration
-      await this.generatePhrases()
-      this.duration = useParameterStore.getDuration
-      this.results.duration = this.duration;
-      this.timeLeft = this.duration * 60;
-      this.generatePhraseText();
-      this.audioPath = "/assets/sounds/" + useSoundStore.getSound + ".wav"
-      this.render();
-      this.startTimer();
+        document.addEventListener("keydown", this.buttonClicked)
+        await this.generatePhrases()
+        this.duration = useParameterStore.getDuration
+        this.results.duration = this.duration;
+        this.timeLeft = this.duration * 60;
+        this.generatePhraseText();
+        this.audioPath = "/assets/sounds/" + useSoundStore.getSound + ".wav"
+        this.render();
+        this.startTimer();
     },
     unmounted() {
-      document.removeEventListener('keydown', this.buttonClicked)
+        document.removeEventListener('keydown', this.buttonClicked)
     },
     methods: {
         // Keep all your existing methods except render() and generateHtml()
@@ -85,10 +81,6 @@
             this.timerInterval = setInterval(() => {
                 this.secondPassed();
             }, 1000);
-        },
-        handleTimeUp() {
-            this.finish = true
-            this.showResults = true
         },
         // ... rest of your methods
         async generatePhrases(){
@@ -117,7 +109,7 @@
         },
         secondPassed(){
             // lol variable to track if this.finish changes later on
-            let lol = !this.finish;
+            let oldFinish = this.finish;
             if(this.timeLeft <= 0){
                 this.finish = true;
             }
@@ -125,8 +117,17 @@
                 this.timeLeft--;
             }
             // now we are sure using lol that this.finish was false and become true then this means the test finished in this second
-            if(lol && this.finish){
+            if(!oldFinish && this.finish){
                 this.showResults = true;
+                const {correctCharacters, correctWords, wrongCharacters, wrongWords, duration} = this.results;
+                saveTestResults(
+                    correctCharacters,
+                    correctWords,
+                    wrongCharacters,
+                    wrongWords,
+                    duration
+                ).then(()=> console.log("test results saved correctly"))
+                .catch(()=> console.log("test results not saved correctly"))
             }
 
         },
@@ -214,7 +215,7 @@
                 wrongWords:0,
                 correctCharacters:0,
                 correctWords:0,
-                duration:1,
+                duration:this.duration,
             }
             this.start = false;
             this.finish = false;
@@ -238,5 +239,5 @@
             console.log("../assets/sounds/"+useSoundStore.getSound+".wav");
         },
     }
-  }
-  </script>
+}
+</script>
