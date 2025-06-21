@@ -5,77 +5,90 @@
             <div class="hidden">
                 <input ref="pictureInput" type="file" name="file" @change="handlePictureChange">
             </div>
-            <div v-if="editMode" class="w-4/12 p-6 max-h-96 relative group">
+            <div v-if="editMode" class="w-4/12 p-6 relative group aspect-square">
                 <img v-if="editedPicture" class="rounded-full h-full object-cover group-hover:opacity-50" :src="picture" alt="avatar">
                 <img v-else-if="picture" class="rounded-full h-full object-cover group-hover:opacity-50" :src="apiUrl+'/uploads/'+picture" alt="avatar">
                 <img v-else src="/assets/avatar.webp" class="rounded-full h-full object-cover group-hover:opacity-50" alt="avatar">
                 <div
-                    class="absolute inset-0 opacity-0 flex items-center justify-center group-hover:opacity-50"
+                    class="absolute inset-0 opacity-0 flex items-center z-10 justify-center group-hover:opacity-50"
                     @click="openFileInput"
                 >
                     <p class="text-xl font-bold" >choose image</p>
                 </div>
             </div>
-            <div v-else class="w-4/12 p-6 mx-auto mt-12 max-h-96">
-                <img v-if="picture" class="rounded-full h-full object-cover" :src="apiUrl+'/uploads/'+picture" alt="avatar">
+            <div v-else class="w-4/12 p-6 aspect-square">
+                <img v-if="picture" class="rounded-full h-full w-full object-cover" :src="apiUrl+'/uploads/'+picture" alt="avatar">
                 <img v-else src="/assets/avatar.webp" class="rounded-full" alt="avatar">
             </div>
-            <div class="w-7/12 flex flex-col gap-16 px-12 py-6 rounded-2xl" style="box-shadow: 1px 1px 1px 1px var(--color-text)">
-                <div v-if="editMode" class="grid grid-cols-[1fr] gap-6 mt-12 text-xl font-bold">
-                    <BaseInput 
-                        v-model="name"
-                        label=""
-                        type="text"
-                        placeholder="your name"
-                        :error="nameError"
-                        required 
-                    />
-                    <BaseInput 
-                        v-model="email"
-                        label=""
-                        type="email"
-                        placeholder="your@gmail.com"
-                        :error="emailError"
-                        required 
-                    />
-                    <div class="flex items-center">
-                        <input for="includePassword" id="incluePassword" name="includePassword" v-model="includePassword" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                        <label for="includePassword" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Update Password</label>
+            <div class="w-7/12" >
+                <button 
+                    @click="currentTab='profile'" 
+                    :class="['text-lg', 'font-bold', 'rounded-tl-md', 'rounded-tr-md', 'p-2', 'pl-2', 'pr-6', currentTab=='profile' ? 'bg-backgroundColorDarker' : '']"
+                >
+                    Profile
+                </button>
+                <button 
+                    @click="currentTab='history'" 
+                    :class="['text-lg', 'font-bold', 'rounded-tl-md', 'rounded-tr-md', 'p-2', 'pl-6', 'pr-6', currentTab=='history' ? 'bg-backgroundColorDarker' : '']"
+                >
+                    History
+                </button>
+                <div v-if="currentTab=='profile'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
+                    <div v-if="editMode" class="grid grid-cols-[1fr] gap-6 text-xl font-bold">
+                        <BaseInput 
+                            v-model="name"
+                            label=""
+                            type="text"
+                            placeholder="your name"
+                            :error="nameError"
+                            required 
+                        />
+                        <BaseInput 
+                            v-model="email"
+                            label=""
+                            type="email"
+                            placeholder="your@gmail.com"
+                            :error="emailError"
+                            required 
+                        />
+                        <div class="flex items-center">
+                            <input for="includePassword" id="incluePassword" name="includePassword" v-model="includePassword" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <label for="includePassword" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Update Password</label>
+                        </div>
+                        <BaseInput 
+                            v-if="includePassword"
+                            v-model="newPassword"
+                            label=""
+                            type="password"
+                            placeholder="******"
+                            :error="newPasswordError"
+                            required 
+                        />
+                        <BaseInput 
+                            v-if="includePassword"
+                            v-model="verifyNewPassword"
+                            label=""
+                            type="password"
+                            placeholder="******"
+                            :error="newPasswordError"
+                            required 
+                        />
                     </div>
-                    <BaseInput 
-                        v-if="includePassword"
-                        v-model="newPassword"
-                        label=""
-                        type="password"
-                        placeholder="******"
-                        :error="newPasswordError"
-                        required 
-                    />
-                    <BaseInput 
-                        v-if="includePassword"
-                        v-model="verifyNewPassword"
-                        label=""
-                        type="password"
-                        placeholder="******"
-                        :error="newPasswordError"
-                        required 
-                    />
-                </div>
-                <div v-else>
-                    <h5 class="text-center">Profile Informations</h5>
-                    <div class="grid grid-cols-[150px_300px] gap-6 mt-12 text-xl font-bold">
+                    <div v-else class="grid grid-cols-[150px_300px] gap-6 font-bold">
                         <div>Username : </div>
                         <div>{{ this.name }}</div>
                         <div>Email : </div>
                         <div>{{ this.email }}</div>
                     </div>
+                    <div class="flex flex-col gap-4">
+                        <BaseButton v-if="editMode" @click="save" variant="primary">{{ isLoading ? "Loading..." : "Save" }}</BaseButton>
+                        <BaseButton v-if="editMode" @click="annuler" variant="danger">Annuler</BaseButton>
+                        <BaseButton v-if="!editMode" @click="activateEditMode" variant="primary">Edit</BaseButton>
+                        <BaseButton v-if="!editMode" @click="handleLogout" variant="danger" :disalbed="isLoading">{{isLoading ? 'Logging out...' : 'Log out'}}</BaseButton>
+                    </div>
                 </div>
-                <hr>
-                <div class="flex flex-col gap-4">
-                    <BaseButton v-if="editMode" @click="save" variant="primary">{{ isLoading ? "Loading..." : "Save" }}</BaseButton>
-                    <BaseButton v-if="editMode" @click="annuler" variant="danger">Annuler</BaseButton>
-                    <BaseButton v-if="!editMode" @click="activateEditMode" variant="primary">Edit</BaseButton>
-                    <BaseButton v-if="!editMode" @click="handleLogout" variant="danger" :disalbed="isLoading">{{isLoading ? 'Logging out...' : 'Log out'}}</BaseButton>
+                <div v-if="currentTab=='history'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
+                    <p>this is history tab so cool</p>
                 </div>
             </div>
         </div>
@@ -107,6 +120,7 @@ export default {
             includePassword: false,
             isLoading: false,
             apiUrl: api_url,
+            currentTab:'profile'
         }
     },
     components:{

@@ -8,6 +8,7 @@ export default {
         "secondary": "var(--color-secondary)",
         "error": "var(--color-error)",
         "backgroundColor": "var(--color-bg)",
+        "backgroundColorDarker": "var(--color-bg-darker)",
         "textColor": "var(--color-text)",
         "key": "var(--color-key)",
       }

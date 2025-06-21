@@ -15,6 +15,7 @@
 @layer base {
     body[data-theme='default']{
         --color-bg: #0F172A;
+        --color-bg-darker: #171e30;
         --color-text: #fff;
         --color-primary: #66FF33;
         --color-secondary: #31572C;
@@ -24,6 +25,7 @@
     }
     body[data-theme='light']{
         --color-bg: #0F172A;
+        --color-bg-darker: #060a13;
         --color-text: #97bdff;
         --color-primary: #3d85fe;
         --color-secondary: #5f5f5f;
