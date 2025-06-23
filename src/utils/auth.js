@@ -130,42 +130,5 @@ const getUser = async ()=>{
     }  
 }
 
-const saveTestResults = (numberCorrectCharacters, numberCorrectWords, numberWrongCharacters, numberWrongWords, duration)=>{
-    return new Promise(async (resolve, reject) => {
-        const token = localStorage.getItem('auth_token');
-        if(!token){
-            reject(false);
-        }
-        try{
-            let now = new Date().toISOString();
-            const res = await fetch(`${api_url}/json/test/save`,{
-            method:'POST',
-                headers:{
-                    'Content-Type':'application/json',
-                    'Authorization':`Bearer ${token}`
-                },
-                body:JSON.stringify({
-                    numberCorrectCharacters:numberCorrectCharacters,
-                    numberCorrectWords:numberCorrectWords,
-                    numberWrongCharacters:numberWrongCharacters,
-                    numberWrongWords:numberWrongWords,
-                    duration:duration,
-                    datetime:now
-                })
-            });
-            const data = await res.json();
-            if(!data.success){
-                reject(false);
-            }
-            resolve(true);
-        }
-        catch(error){
-            console.log("Error fetching data : ",error);
-            reject(false);
-        }  
-    })
-}
 
-
-
-export {login, register, getUser, saveTestResults};
+export {login, register, getUser};

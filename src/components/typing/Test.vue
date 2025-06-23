@@ -26,7 +26,7 @@ import TypingArea from '@/components/typing/TypingArea.vue'
 import Popup from '@/components/feedback/Popup.vue'
 import { getPhrases, shuffleArray } from "@/utils/phrases.js"
 import { useSoundStore, useParameterStore } from "@/stores"
-import { saveTestResults } from '@/utils/auth'
+import { saveTestResults } from '@/utils/tests'
 
 export default {
     components: { Timer, RealTimeDisplayer, TypingArea, Popup },

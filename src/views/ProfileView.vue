@@ -1,39 +1,64 @@
+<script setup>
+const tabs = [
+    { name:'tab1', title:'Profile'},
+    { name:'tab2', title:'History'},
+]
+
+//test objet example
+/*
+_id: "6855f8b4096b449ee6f539c2"
+datetime: "2025-06-21T00:11:32.548Z"
+duration: 1
+numberCorrectCharacters: 304
+numberCorrectWords: 58
+numberWrongCharacters: 8
+numberWrongWords: 6
+userId: "68446bad74c5f8340bac86d6"
+*/
+
+let testsResultsData;
+let lineChartData;
+let lineChartOptions;
+onMounted(async ()=>{
+    let wpmResults = []
+    let dates = [];
+    testsResultsData = await getTestResults()
+    testsResultsData.forEach(test=> {
+        wpmResults.push(test.numberCorrectWords / test.duration);
+        let d = new Date(test.datetime).toLocaleDateString();
+        dates.push(d);
+    });
+
+    console.log(wpmResults);
+    console.log(dates);
+
+    lineChartData = {
+        labels: dates.reverse(),
+        datasets: [{
+            label: 'WPM',
+            data: wpmResults.reverse(),
+            fill: false,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    }
+
+    lineChartOptions = {
+        responsive: true
+    }
+})
+
+
+</script>
+
 <template>
     <main class="main-container bg-backgroundColor min-h-screen text-textColor">
         <Header />
         <div class="flex gap-16 w-10/12 mx-auto mt-12">
-            <div class="hidden">
-                <input ref="pictureInput" type="file" name="file" @change="handlePictureChange">
-            </div>
-            <div v-if="editMode" class="w-4/12 p-6 relative group aspect-square">
-                <img v-if="editedPicture" class="rounded-full h-full object-cover group-hover:opacity-50" :src="picture" alt="avatar">
-                <img v-else-if="picture" class="rounded-full h-full object-cover group-hover:opacity-50" :src="apiUrl+'/uploads/'+picture" alt="avatar">
-                <img v-else src="/assets/avatar.webp" class="rounded-full h-full object-cover group-hover:opacity-50" alt="avatar">
-                <div
-                    class="absolute inset-0 opacity-0 flex items-center z-10 justify-center group-hover:opacity-50"
-                    @click="openFileInput"
-                >
-                    <p class="text-xl font-bold" >choose image</p>
-                </div>
-            </div>
-            <div v-else class="w-4/12 p-6 aspect-square">
-                <img v-if="picture" class="rounded-full h-full w-full object-cover" :src="apiUrl+'/uploads/'+picture" alt="avatar">
-                <img v-else src="/assets/avatar.webp" class="rounded-full" alt="avatar">
-            </div>
+            <ImageInput v-model:editMode="editMode" v-model:picture="picture" v-model:pictureData="pictureData"/>
             <div class="w-7/12" >
-                <button 
-                    @click="currentTab='profile'" 
-                    :class="['text-lg', 'font-bold', 'rounded-tl-md', 'rounded-tr-md', 'p-2', 'pl-2', 'pr-6', currentTab=='profile' ? 'bg-backgroundColorDarker' : '']"
-                >
-                    Profile
-                </button>
-                <button 
-                    @click="currentTab='history'" 
-                    :class="['text-lg', 'font-bold', 'rounded-tl-md', 'rounded-tr-md', 'p-2', 'pl-6', 'pr-6', currentTab=='history' ? 'bg-backgroundColorDarker' : '']"
-                >
-                    History
-                </button>
-                <div v-if="currentTab=='profile'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
+                <TabsHeader v-model="currentTab" :tabs="tabs" />
+                <div v-if="currentTab=='tab1'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
                     <div v-if="editMode" class="grid grid-cols-[1fr] gap-6 text-xl font-bold">
                         <BaseInput 
                             v-model="name"
@@ -76,9 +101,9 @@
                     </div>
                     <div v-else class="grid grid-cols-[150px_300px] gap-6 font-bold">
                         <div>Username : </div>
-                        <div>{{ this.name }}</div>
+                        <div>{{ name }}</div>
                         <div>Email : </div>
-                        <div>{{ this.email }}</div>
+                        <div>{{ email }}</div>
                     </div>
                     <div class="flex flex-col gap-4">
                         <BaseButton v-if="editMode" @click="save" variant="primary">{{ isLoading ? "Loading..." : "Save" }}</BaseButton>
@@ -87,8 +112,11 @@
                         <BaseButton v-if="!editMode" @click="handleLogout" variant="danger" :disalbed="isLoading">{{isLoading ? 'Logging out...' : 'Log out'}}</BaseButton>
                     </div>
                 </div>
-                <div v-if="currentTab=='history'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
-                    <p>this is history tab so cool</p>
+                <div v-if="currentTab=='tab2'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
+                    <Line 
+                    :data="lineChartData"
+                    :options="chartOptions"
+                    />
                 </div>
             </div>
         </div>
@@ -98,9 +126,14 @@
 import Header from '@/components/layout/Header.vue';
 import BaseInput from '@/components/base/BaseInput.vue';
 import BaseButton from '@/components/base/BaseButton.vue';
+import TabsHeader from '@/components/layout/TabsHeader.vue';
+import ImageInput from "../components/base/ImageInput.vue";
 import { useAuthStore } from '@/stores';
 import { updateProfile } from '@/utils/auth';
-import { api_url } from "@/globals";
+import { getTestResults } from '@/utils/tests';
+import { onMounted } from 'vue';
+import { Line } from 'vue-chartjs';
+import {Chart as ChartJS} from 'chart.js/auto';
 
 export default {
     data(){
@@ -119,14 +152,16 @@ export default {
             editMode: false,
             includePassword: false,
             isLoading: false,
-            apiUrl: api_url,
-            currentTab:'profile'
+            currentTab:'tab1',
         }
     },
     components:{
         BaseButton,
         BaseInput,
         Header,
+        TabsHeader,
+        ImageInput,
+        Line
     },
     computed:{
         authStore(){
@@ -149,33 +184,16 @@ export default {
             this.isLoading = false;
             this.$router.push('/');
         },
-        // Picture login
-        openFileInput(){
-            this.$refs.pictureInput.click();
-        },
-        handlePictureChange(event){
-            this.previewImage(event);
-            // handle uploading image
-            this.pictureData = event.target.files[0];
-        },
-        async uploadFile(){
-        },
-        previewImage(event){
-            const file = event.target.files[0];
-            if(!file) return ;
-            this.editedPicture = true;
-            this.picture = URL.createObjectURL(file);
-        },
         // state handling
         activateEditMode(){
+            this.clearErros();
             this.editMode = true;
-            this.nameError = "";
-            this.emailError = "";
-            this.newPasswordError = "";
         },
         async save(){
             let isValid = true;
             let res = null;
+
+            this.clearErros();
 
             if(!this.name){
                 this.nameError = "The field name is required";
@@ -208,7 +226,6 @@ export default {
             this.isLoading = true;
             try{
                 res = await updateProfile(formData);
-                console.log(res);
             }
             catch(error){
                 this.newPasswordError = "Sorry an unexpecated error happened, try again later"
@@ -227,7 +244,6 @@ export default {
                 this.isLoading = false;
                 return ;
             }
-
             this.authStore.setUser(res.user, false);
             this.isLoading = false;
             this.editMode = false;
@@ -240,6 +256,11 @@ export default {
             this.picture = this.authStore.picture;
             this.editMode = false;
             this.editedPicture = false;
+        },
+        clearErros(){
+            this.nameError = "";
+            this.emailError = "";
+            this.newPasswordError = "";
         },
         onUnmounted(){
             URL.revokeObjectURL(this.picture);
