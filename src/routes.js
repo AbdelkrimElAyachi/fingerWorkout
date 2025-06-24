@@ -9,7 +9,6 @@ import ProfileView from "@/views/ProfileView.vue";
 const routes = [
   // dynamic segments start with a colon
   { path: '/', component: HomeView },
-  { path: '/contribute', component: ContributeView },
   { path: '/login', component: LoginView },
   { path: '/signup', component: SignupView},
   { path: '/profile', component: ProfileView},

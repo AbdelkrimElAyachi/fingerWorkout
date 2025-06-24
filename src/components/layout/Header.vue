@@ -49,11 +49,6 @@ const authStore = useAuthStore();
                         <span class="link_text " >Home</span>
                     </RouterLink>
                 </li>
-                <li class="hover:text-primary hover:border-b-4 border-primary">
-                    <RouterLink to="/contribute">
-                        <span class="link_text" >Contribute</span>
-                    </RouterLink>
-                </li>
                 <li v-if="!authStore.isAuthenticated" class="hover:text-primary hover:border-b-4 border-primary">
                     <RouterLink to="/login">
                         <span class="link_text" >Log In</span>
