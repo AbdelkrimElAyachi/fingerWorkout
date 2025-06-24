@@ -127,7 +127,7 @@ import Header from '@/components/layout/Header.vue';
 import BaseInput from '@/components/base/BaseInput.vue';
 import BaseButton from '@/components/base/BaseButton.vue';
 import TabsHeader from '@/components/layout/TabsHeader.vue';
-import ImageInput from "../components/base/ImageInput.vue";
+import ImageInput from "@/components/base/ImageInput.vue";
 import { useAuthStore } from '@/stores';
 import { updateProfile } from '@/utils/auth';
 import { getTestResults } from '@/utils/tests';
