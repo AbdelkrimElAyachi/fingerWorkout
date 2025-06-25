@@ -57,7 +57,7 @@ onMounted(async ()=>{
         <div class="flex gap-16 w-10/12 mx-auto mt-12">
             <ImageInput v-model:editMode="editMode" v-model:picture="picture" v-model:pictureData="pictureData"/>
             <div class="w-7/12" >
-                <TabsHeader v-model="currentTab" :tabs="tabs" />
+                <TabsHeader v-model:currentTab="currentTab" :tabs="tabs" />
                 <div v-if="currentTab=='tab1'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
                     <div v-if="editMode" class="grid grid-cols-[1fr] gap-6 text-xl font-bold">
                         <BaseInput 
