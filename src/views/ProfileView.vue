@@ -15,40 +15,6 @@ numberWrongCharacters: 8
 numberWrongWords: 6
 userId: "68446bad74c5f8340bac86d6"
 */
-
-let testsResultsData;
-let lineChartData;
-let lineChartOptions;
-onMounted(async ()=>{
-    let wpmResults = []
-    let dates = [];
-    testsResultsData = await getTestResults()
-    testsResultsData.forEach(test=> {
-        wpmResults.push(test.numberCorrectWords / test.duration);
-        let d = new Date(test.datetime).toLocaleDateString();
-        dates.push(d);
-    });
-
-    console.log(wpmResults);
-    console.log(dates);
-
-    lineChartData = {
-        labels: dates.reverse(),
-        datasets: [{
-            label: 'WPM',
-            data: wpmResults.reverse(),
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-        }]
-    }
-
-    lineChartOptions = {
-        responsive: true
-    }
-})
-
-
 </script>
 
 <template>
@@ -114,9 +80,35 @@ onMounted(async ()=>{
                 </div>
                 <div v-if="currentTab=='tab2'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
                     <Line 
-                    :data="lineChartData"
-                    :options="chartOptions"
+                    :data="calculateLineChartData()"
+                    :options="{responsive: true}"
                     />
+                    <div class="flex justify-center mt-4 space-x-1">
+                        <button
+                            @click="previousHistoryPage"
+                            :disabled="page <= 1"
+                            class="px-3 py-1 border rounded disabled:opacity-50"
+                        >
+                            Prev
+                        </button>
+                        <button
+                            v-for="p in pages"
+                            :key="p"
+                            :class="[
+                            'px-3 py-1 border rounded',
+                            p === page ? 'bg-primary text-white' : 'hover:bg-gray-200'
+                            ]"
+                        >
+                            {{ p }}
+                        </button>
+                        <button
+                            @click="nextHistoryPage"
+                            :disabled="page >= pages"
+                            class="px-3 py-1 border rounded disabled:opacity-50"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -131,13 +123,13 @@ import ImageInput from "@/components/base/ImageInput.vue";
 import { useAuthStore } from '@/stores';
 import { updateProfile } from '@/utils/auth';
 import { getTestResults } from '@/utils/tests';
-import { onMounted } from 'vue';
 import { Line } from 'vue-chartjs';
 import {Chart as ChartJS} from 'chart.js/auto';
 
 export default {
     data(){
         return{
+            // midying profile data state variables
             name: null,
             nameError:null,
             email: null,
@@ -152,7 +144,15 @@ export default {
             editMode: false,
             includePassword: false,
             isLoading: false,
+
+            // header tabs variables
             currentTab:'tab1',
+
+            // history pagination variables
+            testResults:[],
+            page : 1,
+            pages : null,
+            limit: 10
         }
     },
     components:{
@@ -172,6 +172,11 @@ export default {
         if(!this.authStore.isAuthenticated){
             this.$router.push('/login');
         }
+
+        const {testResults, pages} = await getTestResults(this.page,this.limit);
+        this.testResults = testResults;
+        this.pages = pages;
+
         this.email = this.authStore.email;
         this.name = this.authStore.name;
         this.picture = this.authStore.picture;
@@ -183,6 +188,52 @@ export default {
             await this.authStore.clear();
             this.isLoading = false;
             this.$router.push('/');
+        },
+        async nextHistoryPage(){
+            if(this.page < this.pages) this.page++;
+            await this.goToHistoryPage();
+        },
+        async previousHistoryPage(){
+            if(this.page > 1) this.page--;
+            await this.goToHistoryPage();
+        },
+        async goToHistoryPage(){
+            const {testResults}= await getTestResults(this.page,this.limit);
+            this.testResults = testResults;
+        },
+        calculateLineChartData(){
+            let wpmResults = []
+            let dates = [];
+            const now = new Date();
+
+            this.testResults.forEach(test=> {
+                wpmResults.push(test.numberCorrectWords / test.duration);
+                let d = new Date(test.datetime);
+                const isToday = 
+                    d.getDate() == now.getDate() &&
+                    d.getMonth() == now.getMonth() &&
+                    d.getFullYear() == now.getFullYear();
+                //if the test take place today show time else show date
+                if(isToday)
+                    dates.push(d.toLocaleTimeString())
+                else
+                    dates.push(d.toLocaleDateString());
+            });
+
+            //console.log(wpmResults);
+            //console.log(dates);
+
+            return {
+                labels: dates.reverse(),
+                datasets: [{
+                    label: 'WPM',
+                    data: wpmResults.reverse(),
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            }
+
         },
         // state handling
         activateEditMode(){

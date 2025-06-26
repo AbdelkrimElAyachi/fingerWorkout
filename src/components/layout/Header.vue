@@ -16,26 +16,27 @@ const authStore = useAuthStore();
                     </button>
                 </div>
 
-                <div v-if="dropDownOpen" class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-backgroundColor shadow-lg ring-1 ring-secondary ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                <div v-if="dropDownOpen" class="absolute right-0 z-10 mt-2 w-44 origin-top-right rounded-md bg-backgroundColor shadow-lg ring-1 ring-secondary ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-1" role="none">
                     <a href="#" @click="hanldeTheme" data-theme="default"  class="text-textColor block px-4 py-2 text-sm hover:bg-secondary" role="menuitem" tabindex="-1" id="menu-item-0">
                         <div class="flex">
                             <div class="rounded-full h-4 w-4 bg-[#0F172A] border-2"></div>
-                            <div class="rounded-full h-4 w-4 bg-[#ffffff] border-2"></div>
                             <div class="rounded-full h-4 w-4 bg-[#66FF33] border-2"></div>
-                            <div class="rounded-full h-4 w-4 bg-[#31572C] border-2"></div>
-                            <div class="rounded-full h-4 w-4 bg-[#FF4F63] border-2"></div>
-                            <pre> : default</pre>
+                            <pre> : Default</pre>
                         </div>
                     </a>
-                    <a href="#" @click="hanldeTheme" data-theme="light" class="text-textColor block px-4 py-2 text-sm hover:bg-secondary" role="menuitem" tabindex="-1" id="menu-item-1">
+                    <a href="#" @click="hanldeTheme" data-theme="blue" class="text-textColor block px-4 py-2 text-sm hover:bg-secondary" role="menuitem" tabindex="-1" id="menu-item-1">
                         <div class="flex">
-                            <div class="rounded-full h-4 w-4 bg-[#ffffff] border-2"></div>
-                            <div class="rounded-full h-4 w-4 bg-[#000000] border-2"></div>
+                            <div class="rounded-full h-4 w-4 bg-[#0F172A] border-2"></div>
                             <div class="rounded-full h-4 w-4 bg-[#3d85fe] border-2"></div>
-                            <div class="rounded-full h-4 w-4 bg-[#d4d4d4] border-2"></div>
-                            <div class="rounded-full h-4 w-4 bg-[#ff3333] border-2"></div>
-                            <pre> : light</pre>
+                            <pre> : Blue</pre>
+                        </div>
+                    </a>
+                    <a href="#" @click="hanldeTheme" data-theme="pink" class="text-textColor block px-4 py-2 text-sm hover:bg-secondary" role="menuitem" tabindex="-1" id="menu-item-1">
+                        <div class="flex">
+                            <div class="rounded-full h-4 w-4 bg-[#0F172A] border-2"></div>
+                            <div class="rounded-full h-4 w-4 bg-[#fe3dd4] border-2"></div>
+                            <pre> : Pink</pre>
                         </div>
                     </a>
                     </div>
@@ -74,7 +75,9 @@ export default {
         };
     },
     async created(){
-        this.currentTheme = document.body.getAttribute("data-theme");
+        this.currentTheme = localStorage.getItem('data-theme');
+        if(!this.currentTheme) localStorage.setItem('data-theme','default');
+        this.renderTheme();
     },
     methods: {
         toggleDropDown(){
@@ -85,6 +88,7 @@ export default {
         },
         hanldeTheme(e){
             this.currentTheme = e.currentTarget.getAttribute("data-theme");
+            localStorage.setItem('data-theme', e.currentTarget.getAttribute("data-theme"));
             this.renderTheme();
         },
         renderTheme(){

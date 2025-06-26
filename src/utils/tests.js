@@ -38,14 +38,47 @@ const saveTestResults = (numberCorrectCharacters, numberCorrectWords, numberWron
 }
 
 
-const getTestResults = () => {
+const getTestResults = (page, limit) => {
     const token = localStorage.getItem('auth_token');
     if(!token){
         return;
     }
     try{
         return new Promise(async (resolve, reject) => {
-            const res = await fetch(`${api_url}/json/test/all`, {
+            const res = await fetch(`${api_url}/json/test/all?page=${page}&limit=${limit}`, {
+                method: 'GET',
+                headers:{
+                    'Content-Type':'application/json',
+                    'Authorization':`Bearer ${token}`
+                }
+            })
+            const data = await res.json();
+            if(!data.success){
+                reject(false);
+            }
+            resolve({
+                testResults: data.data, 
+                total : data.total, 
+                pages : data.pages, 
+                page : data.page, 
+                limit : data.limit
+            });
+        })
+    }
+    catch(error){
+        console.log("Error fetching data : ",error);
+        reject(false);
+    }  
+}
+
+const getTopTestResult = () => {
+    const token = localStorage.getItem('auth_token');
+    if(!token){
+        return;
+    }
+    try{
+        return new Promise(async (resolve, reject) => {
+            const res = await fetch(`${api_url}/json/test/top`, {
                 method: 'GET',
                 headers:{
                     'Content-Type':'application/json',
@@ -65,4 +98,4 @@ const getTestResults = () => {
     }  
 }
 
-export {saveTestResults, getTestResults};
+export {saveTestResults, getTestResults, getTopTestResult};
