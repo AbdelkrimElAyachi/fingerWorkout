@@ -21,7 +21,7 @@ userId: "68446bad74c5f8340bac86d6"
     <main class="main-container bg-backgroundColor min-h-screen text-textColor">
         <Header />
         <div class="flex gap-16 w-10/12 mx-auto mt-12">
-            <ImageInput v-model:editMode="editMode" v-model:picture="picture" v-model:pictureData="pictureData"/>
+            <ImageInput v-model:editMode="editMode" v-model:picture="picture" v-model:pictureData="pictureData" v-model:editedPicture="editedPicture"/>
             <div class="w-7/12" >
                 <TabsHeader v-model:currentTab="currentTab" :tabs="tabs" />
                 <div v-if="currentTab=='tab1'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
@@ -79,6 +79,9 @@ userId: "68446bad74c5f8340bac86d6"
                     </div>
                 </div>
                 <div v-if="currentTab=='tab2'" class="p-4 flex flex-col pt-10 rounded-tr-md rounded-bl-md rounded-br-md gap-10 bg-backgroundColorDarker">
+                    <div>
+                        <h5 class="text-center">Top : {{ TopTestResult }} WPM</h5>
+                    </div>
                     <Line 
                     :data="calculateLineChartData()"
                     :options="{responsive: true}"
@@ -93,6 +96,7 @@ userId: "68446bad74c5f8340bac86d6"
                         </button>
                         <button
                             v-for="p in pages"
+                            @click="goToHistoryPage(p)"
                             :key="p"
                             :class="[
                             'px-3 py-1 border rounded',
@@ -109,6 +113,7 @@ userId: "68446bad74c5f8340bac86d6"
                             Next
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -122,7 +127,7 @@ import TabsHeader from '@/components/layout/TabsHeader.vue';
 import ImageInput from "@/components/base/ImageInput.vue";
 import { useAuthStore } from '@/stores';
 import { updateProfile } from '@/utils/auth';
-import { getTestResults } from '@/utils/tests';
+import { getTestResults, getTopTestResult } from '@/utils/tests';
 import { Line } from 'vue-chartjs';
 import {Chart as ChartJS} from 'chart.js/auto';
 
@@ -152,7 +157,8 @@ export default {
             testResults:[],
             page : 1,
             pages : null,
-            limit: 10
+            limit: 10,
+            TopTestResult : 0,
         }
     },
     components:{
@@ -180,6 +186,9 @@ export default {
         this.email = this.authStore.email;
         this.name = this.authStore.name;
         this.picture = this.authStore.picture;
+        // top test result
+        const data = await getTopTestResult();
+        this.TopTestResult = data[0].wpm ?? 0;
     },
     methods:{
         // logout logic
@@ -191,13 +200,17 @@ export default {
         },
         async nextHistoryPage(){
             if(this.page < this.pages) this.page++;
-            await this.goToHistoryPage();
+            await this.goToHistoryPage(this.page);
         },
         async previousHistoryPage(){
             if(this.page > 1) this.page--;
-            await this.goToHistoryPage();
+            await this.goToHistoryPage(this.page);
         },
-        async goToHistoryPage(){
+        async goToHistoryPage(page){
+            if(!(page < this.pages) && !(this.page >= 1) ){
+                return;
+            }
+            this.page = page;
             const {testResults}= await getTestResults(this.page,this.limit);
             this.testResults = testResults;
         },

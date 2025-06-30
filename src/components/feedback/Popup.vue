@@ -17,8 +17,8 @@
         />
       </div>
       <div class="flex flex-col gap-8 w-96 p-6">
-          <p class="self-center text-xl text-primary" v-if="TopTestResult < calculTestWPM">Congratulation New Record</p>
-          <div v-if="TopTestResult < calculTestWPM && TopTestResult != 0" class="flex justify-center items-center gap-4 text-primary">
+          <p class="self-center text-xl text-primary" v-if="TopTestResult < calculTestWPM && TopTestResult != 0 && authStore.isAuthenticated">Congratulation New Record</p>
+          <div v-if="TopTestResult < calculTestWPM && TopTestResult != 0 && authStore.isAuthenticated" class="flex justify-center items-center gap-4 text-primary">
             <h1 class="text-6xl">{{ calculTestWPM }}</h1>
             <h1 class="text-4xl self-end">WPM</h1>  
             <i class="bi bi-arrow-up-short"></i>
@@ -50,6 +50,7 @@
 
 <script>
 import {Chart as ChartJS} from 'chart.js/auto';
+import { useAuthStore } from '@/stores';
 import { Doughnut } from 'vue-chartjs';
 import { getTopTestResult } from '@/utils/tests';
 
@@ -65,6 +66,7 @@ export default {
     return {
       TopTestResult : null,
       modalOpen : true,
+      authStore: useAuthStore()
     }
   },
   async mounted(){

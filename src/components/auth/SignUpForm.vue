@@ -109,14 +109,15 @@ export default {
                 this.isLoading = false;
                 return;
             }
+            console.log(res);
             if(!res.success){
                 if(res.errors.validationErrors){
                     this.emailError = res.errors.validationErrors['email'];
-                    this.authError = res.errors.validationErrors['password'];
+                    this.passwordError = res.errors.validationErrors['password'];
                     this.nameError = res.errors.validationErrors['name'];
                 }
                 else{
-                    this.authError = res.errors.authError;
+                    this.emailError = res.errors.authError;
                 }
                 this.isLoading = false;
                 return ;

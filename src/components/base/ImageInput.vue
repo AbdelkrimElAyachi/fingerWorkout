@@ -41,14 +41,14 @@ export default {
             type: String,
             required: false,
             default: null
+        },
+        editedPicture:{
+            type: Boolean,
+            required: true,
+            default: false
         }
     },
-    emits: ['update:pictureData','update:picture'],
-    data(){
-        return {
-            editedPicture: false,
-        }
-    },
+    emits: ['update:pictureData','update:picture', 'update:editedPicture'],
     methods:{
         openFileInput(){
             this.$refs.pictureInput.click();
@@ -61,7 +61,7 @@ export default {
         previewImage(event){
             const file = event.target.files[0];
             if(!file) return ;
-            this.editedPicture = true;
+            this.$emit('update:editedPicture', true)
             const image = URL.createObjectURL(file);
             this.$emit('update:picture', image)
         },
