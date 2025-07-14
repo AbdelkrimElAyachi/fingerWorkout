@@ -1,6 +1,12 @@
 # FingerWorkout
 
 FingerWorkout is an open-source web application designed to help users improve their typing speed and accuracy. It provides a range of exercises, games, and challenges to help users develop their typing skills.
+`
+**Note** : this project is only the frontend you can find the backend and the websocket project herer
+- Frond-end : 
+- Back-end
+`
+
 
 ## Features
 
@@ -11,16 +17,6 @@ FingerWorkout is an open-source web application designed to help users improve t
 - **Multi language**: The website support differents language include (english, arabic, french).
 
 
-## Installation and Setup
-
-To set up FingerWorkout on your local machine, follow these steps:
-
-1. Clone the repository:
-
-2. Navigate to the project directory:
-
-3. Install the required dependencies:
-
-4. Start the development server:
-
-5. Open your web browser and visit `http://localhost:3000` to access the FingerWorkout website.
+## In Developpement
+- **Competition** : you can compete with others in a typing race by entering the same room randomly or by creating a custom room and sending the number of the room to the one you want to compete with
+- **Details** : more specific details about your typing speed like what is the most likely character you will fail at typing and most the likely character you will not failt at typing etc...
