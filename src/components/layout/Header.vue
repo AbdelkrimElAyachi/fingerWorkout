@@ -71,12 +71,10 @@ export default {
     data() {
         return {
             dropDownOpen:false,
-            currentTheme:"default",
         };
     },
     async created(){
-        this.currentTheme = localStorage.getItem('data-theme');
-        if(!this.currentTheme) localStorage.setItem('data-theme','default');
+        if(!localStorage.getItem('data-theme')) localStorage.setItem('data-theme','default');
         this.renderTheme();
     },
     methods: {
@@ -87,12 +85,12 @@ export default {
             this.dropDownOpen = closeOrOpen;
         },
         hanldeTheme(e){
-            this.currentTheme = e.currentTarget.getAttribute("data-theme");
             localStorage.setItem('data-theme', e.currentTarget.getAttribute("data-theme"));
             this.renderTheme();
         },
         renderTheme(){
-            document.body.setAttribute("data-theme",this.currentTheme);
+            const currentTheme = localStorage.getItem('data-theme');
+            document.body.setAttribute("data-theme",currentTheme);
         },
     }
     };
