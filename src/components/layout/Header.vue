@@ -90,7 +90,7 @@ export default {
         },
         renderTheme(){
             const currentTheme = localStorage.getItem('data-theme');
-            document.body.setAttribute("data-theme",currentTheme);
+            document.getElementById('app').setAttribute("data-theme",currentTheme);
         },
     }
     };

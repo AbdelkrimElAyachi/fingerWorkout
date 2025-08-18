@@ -31,16 +31,17 @@ export default {
         }
     },
     created(){
-        this.soundLevel = useSoundStore.getSoundLevel;
-        this.sound = useSoundStore.getSound;
+        const store = useSoundStore()
+        this.soundLevel = store.getSoundLevel;
+        this.sound = store.getSound;
         this.choices = sounds;
     },
     watch: {
         soundLevel(newV,oldV){
-            useSoundStore.setSoundLevel(newV);
+            useSoundStore().setSoundLevel(newV);
         },
         sound(newV,oldV){
-            useSoundStore.setSound(newV);
+            useSoundStore().setSound(newV);
         }
     },
 };

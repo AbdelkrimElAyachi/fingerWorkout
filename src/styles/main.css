@@ -13,7 +13,7 @@
 
 
 @layer base {
-  body[data-theme='default']{
+  #app[data-theme='default']{
     --color-bg: #0F172A;
     --color-bg-darker: #171e30;
     --color-text: #fff;
@@ -23,7 +23,7 @@
     --color-key: #000;
     --color-white: #fff;
   }
-  body[data-theme='blue']{
+  #app[data-theme='blue']{
     --color-bg: #0F172A;
     --color-bg-darker: #171e30;
     --color-text: #97bdff;
@@ -33,7 +33,7 @@
     --color-key: #DDD;
     --color-white: #000;
   }
-  body[data-theme='pink']{
+  #app[data-theme='pink']{
     --color-bg: #0F172A;
     --color-bg-darker: #171e30;
     --color-text: #f397ff;

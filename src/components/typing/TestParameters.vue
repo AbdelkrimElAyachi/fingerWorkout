@@ -24,11 +24,13 @@ export default {
         }
     },
     created(){
-        this.duration = useParameterStore.getDuration;
+        const store = useParameterStore();
+        this.duration = store.getDuration;
     },
     watch: {
         duration(newV,oldV){
-            useParameterStore.setDuration(newV);
+            const store = useParameterStore();
+            store.setDuration(newV);
         }
     },
 };

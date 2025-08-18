@@ -17,17 +17,19 @@
         />
       </div>
       <div class="flex flex-col gap-8 w-96 p-6">
-          <p class="self-center text-xl text-primary" v-if="TopTestResult < calculTestWPM && TopTestResult != 0 && authStore.isAuthenticated">Congratulation New Record</p>
-          <div v-if="TopTestResult < calculTestWPM && TopTestResult != 0 && authStore.isAuthenticated" class="flex justify-center items-center gap-4 text-primary">
+          <p class="self-center text-xl text-primary" v-if="authStore.isAuthenticated && authStore.topTestResult < calculTestWPM">Congratulation New Record</p>
+          <div v-if="authStore.isAuthenticated && authStore.topTestResult < calculTestWPM" class="flex justify-center items-center gap-4 text-primary">
             <h1 class="text-6xl">{{ calculTestWPM }}</h1>
             <h1 class="text-4xl self-end">WPM</h1>  
             <i class="bi bi-arrow-up-short"></i>
-            <p>{{ (( (calculTestWPM - TopTestResult) * 100) / TopTestResult).toFixed(2) }} %</p>
+            <p v-if="increasePercentage !== null">{{ increasePercentage }} %</p>
+            <p v-else>First record!</p>
           </div> 
           <div v-else class="flex justify-center items-center gap-4 text-primary">
             <h1 class="text-6xl">{{ calculTestWPM }}</h1>
             <h1 class="text-4xl self-end">WPM</h1>  
             <i class="bi bi-exclamation-circle" title="WPM are calculated using the number of correct words divided by the duration of the test"></i> 
+            <p>{{ authStore.topTestResult }}</p>
           </div> 
           <div class="flex justify-between">
               <p>Word Accuracy </p><p> {{Math.round(( result.correctWords / (result.correctWords + result.wrongWords) ) * 100)}} %</p>
@@ -52,7 +54,6 @@
 import {Chart as ChartJS} from 'chart.js/auto';
 import { useAuthStore } from '@/stores';
 import { Doughnut } from 'vue-chartjs';
-import { getTopTestResult } from '@/utils/tests';
 
 export default {
   name: "Popup",
@@ -64,18 +65,22 @@ export default {
   },
   data(){
     return {
-      TopTestResult : null,
       modalOpen : true,
       authStore: useAuthStore()
     }
   },
-  async mounted(){
-    const data = await getTopTestResult();
-    this.TopTestResult = data[0].wpm ?? 0;
-  },
   computed:{
     calculTestWPM(){
+      // Use defensive check in case result is not ready
+      if (!this.result.correctWords || !this.result.duration) return 1;
       return Math.round( this.result.correctWords / this.result.duration);
+    },
+    increasePercentage() {
+      if (this.authStore.topTestResult <= 0) return null;
+      if(this.calculateTestWPM > this.authStore.topTestResult){
+          this.authStore.setNewRecord(this.calculateTestWPM)
+      }
+      return ((this.calculTestWPM - this.authStore.topTestResult) * 100 / this.authStore.topTestResult).toFixed(2);
     }
   },
   components:{

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { piniaInstance, sounds } from "@/globals";
 import { getUser } from "../utils/auth";
+import { getTopTestResult } from '@/utils/tests';
 
 // auth store used to store the user auth process
 // user : (default : null)
@@ -14,6 +14,7 @@ export const useAuthStore = defineStore('auth', {
     email : null,
     picture : null,
     token : null,
+    topTestResult: 0,
     authenticated: false
   }),
 
@@ -22,6 +23,7 @@ export const useAuthStore = defineStore('auth', {
     getPicture: (state) => state.picture,
     getEmail: (state) => state.email,
     getName: (state) => state.name,
+    getTopTestResult : (state) => state.topTestResult
   },
 
   actions: {
@@ -36,6 +38,8 @@ export const useAuthStore = defineStore('auth', {
           this.email = res.email;
           this.picture = res.picture;
           this.authenticated = true;
+          const data = await getTopTestResult();
+          this.topTestResult = data[0].wpm ?? 1;
         }
       }
     },
@@ -49,6 +53,10 @@ export const useAuthStore = defineStore('auth', {
       this.picture = user?.picture;
       this.token = token;
       this.authenticated = true;
+    },
+
+    setNewRecord(newRecord){
+        this.topTestResult = newRecord;
     },
 
     clear() {

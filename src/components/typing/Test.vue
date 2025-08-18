@@ -63,11 +63,11 @@ export default {
     async mounted() {
         document.addEventListener("keydown", this.buttonClicked)
         await this.generatePhrases()
-        this.duration = useParameterStore.getDuration
+        this.duration = useParameterStore().getDuration
         this.results.duration = this.duration;
         this.timeLeft = this.duration * 60;
         this.generatePhraseText();
-        this.audioPath = "/assets/sounds/" + useSoundStore.getSound + ".wav"
+        this.audioPath = "/assets/sounds/" + useSoundStore().getSound + ".wav"
         this.render();
         this.startTimer();
     },
@@ -174,9 +174,9 @@ export default {
                 return ;
             }
 
-            this.audio = new Audio("/assets/sounds/" + useSoundStore.getSound + ".wav");
+            this.audio = new Audio("/assets/sounds/" + useSoundStore().getSound + ".wav");
             this.audio.currentTime = 0.1;
-            this.audio.volume = (useSoundStore.getSoundLevel/100);
+            this.audio.volume = (useSoundStore().getSoundLevel/100);
             this.audio.play();
 
             // if the user press space key 
@@ -207,7 +207,7 @@ export default {
             this.phraseIndex = 0;
             this.wordIndex = 0;
             this.charIndex = 0;
-            this.duration = useParameterStore.getDuration
+            this.duration = useParameterStore().getDuration
             this.timeLeft = this.duration * 60;
             this.finish = false;
             this.results = {
@@ -236,7 +236,7 @@ export default {
             return (this.wordIndex >= this.currentText.length);
         },
         playSound(){
-            console.log("../assets/sounds/"+useSoundStore.getSound+".wav");
+            console.log("../assets/sounds/"+useSoundStore().getSound+".wav");
         },
     }
 }

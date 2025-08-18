@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { piniaInstance, sounds } from "@/globals";
+import { sounds } from "@/globals";
 
 
 // sound store used to store the parameter of the tests sound effects
@@ -7,7 +7,7 @@ import { piniaInstance, sounds } from "@/globals";
 // sound : (deafult : 'keyboard')
 // sound level : (default : 25 )
 export const useSoundStore = defineStore("sound", {
-  state: () => ({ sound: "keyboard", soundLevel: 25 }),
+  state: () => ({ sound: sounds[0], soundLevel: 25 }),
 
   getters: {
     getSound: (state) => state.sound,
@@ -22,5 +22,5 @@ export const useSoundStore = defineStore("sound", {
       this.soundLevel = value;
     }
   }
-})(piniaInstance);
+});
 
