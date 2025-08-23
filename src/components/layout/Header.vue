@@ -55,11 +55,18 @@ const authStore = useAuthStore();
                         <span class="link_text" >Log In</span>
                     </RouterLink>
                 </li>
-                <li v-else class="hover:text-primary hover:border-b-4 border-primary">
+                <template v-else>
+                <li class="hover:text-primary hover:border-b-4 border-primary">
                     <RouterLink to="/profile">
                         <button class="link_text" >Profile</button>
                     </RouterLink>
                 </li>
+                <li>
+                    <RouterLink to="/compete">
+                        <button class="link_text" >Competition</button>
+                    </RouterLink>
+                </li>
+                </template>
             </ul>
         </nav>
     </header>

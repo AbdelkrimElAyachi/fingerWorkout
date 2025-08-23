@@ -17,8 +17,8 @@ const router = createRouter({
 
 (async function(){
   const app = createApp(App);
-  app.use(router);
   app.use(piniaInstance);
+  app.use(router);
   // registre directovie -- keep it before mounting the app no matter what
   app.directive('click-outside', clickOutsideElement);
 

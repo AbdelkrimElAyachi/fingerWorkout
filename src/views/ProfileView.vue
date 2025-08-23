@@ -186,9 +186,6 @@ export default {
         this.email = this.authStore.email;
         this.name = this.authStore.name;
         this.picture = this.authStore.picture;
-        // top test result
-        const data = await getTopTestResult();
-        this.TopTestResult = data[0].wpm ?? 0;
     },
     methods:{
         // logout logic
