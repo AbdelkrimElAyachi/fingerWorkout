@@ -155,6 +155,13 @@ export default {
               this.roomUsers[index] = { ...this.roomUsers[index], ...updatedUser };
             }
           });
+      },
+      userJoined: ({ userId, avatar }) => {
+          this.roomUsers.push({id:userId, index:0, wrong:0, correct:0, avatar, isReady: false})
+      },
+      userLeft: ({ userId }) => {
+        // remove the user who left
+        this.roomUsers = this.roomUsers.filter(u => u.id !== userId);
       }
     });
     // handle existing room code

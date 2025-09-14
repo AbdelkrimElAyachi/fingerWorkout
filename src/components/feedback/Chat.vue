@@ -117,14 +117,6 @@ onMounted(() => {
       });
       scrollToBottom();
     },
-    userJoined: ({ userId }) => {
-      messages.value.push({ message: `User ${userId} joined the room`, senderId: 'system', avatar: '' });
-      scrollToBottom();
-    },
-    userLeft: ({ userId }) => {
-      messages.value.push({ message: `User ${userId} left the room`, senderId: 'system', avatar: '' });
-      scrollToBottom();
-    },
     userReconnected: ({ userId }) => {
       messages.value.push({ message: `User ${userId} reconnected`, senderId: 'system', avatar: '' });
       scrollToBottom();
