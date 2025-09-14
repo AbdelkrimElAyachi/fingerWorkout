@@ -68,17 +68,22 @@
   </div>
 </template>
 
+
 <script setup>
-import { ref, nextTick, toRefs } from 'vue';
-import { useSocket } from '@/composables/useSocket';
+import { useAuthStore } from '@/stores/authStore';
+import { ref, nextTick, onMounted, onUnmounted, toRefs } from 'vue';
+import {
+  connectSocket,
+  emit,
+  registerEvents,
+  unregisterEvents
+} from '@/services/socketService';
 
 const messages = ref([]);
 const newMessage = ref('');
 const messagesContainer = ref(null);
 const isOpen = ref(false);
 
-
-// Props from parent
 const props = defineProps({
   currentUserId: String,
   currentUserAvatar: String
@@ -90,35 +95,49 @@ const toggleChat = () => {
   isOpen.value = !isOpen.value;
 };
 
-const { emit } = useSocket({
-  receiveMessage: (msg) => {
-    messages.value.push({
-      message: msg.message,
-      senderId: msg.userId,
-      avatar: msg.avatar
-    });
+const scrollToBottom = () => {
+  nextTick(() => {
+    const container = messagesContainer.value;
+    if (container) container.scrollTop = container.scrollHeight;
+  });
+};
 
-    nextTick(() => {
-      const container = messagesContainer.value;
-      if (container) container.scrollTop = container.scrollHeight;
-    });
-  },
+// --- Socket Events ---
+onMounted(() => {
+  const authStore = useAuthStore();
+  connectSocket(authStore.email); // connect global socket
 
-  userJoined: ({ userId }) => {
-    messages.value.push({ message: `User ${userId} joined the room`, senderId: 'system', avatar: '' });
-    scrollToBottom();
-  },
-  userLeft: ({ userId }) => {
-    messages.value.push({ message: `User ${userId} left the room`, senderId: 'system', avatar: '' });
-    scrollToBottom();
-  },
-  userReconnected: ({ userId }) => {
-    messages.value.push({ message: `User ${userId} reconnected`, senderId: 'system', avatar: '' });
-    scrollToBottom();
-  }
+  // register only chat-specific events
+  registerEvents({
+    receiveMessage: (msg) => {
+      messages.value.push({
+        message: msg.message,
+        senderId: msg.userId,
+        avatar: msg.avatar
+      });
+      scrollToBottom();
+    },
+    userJoined: ({ userId }) => {
+      messages.value.push({ message: `User ${userId} joined the room`, senderId: 'system', avatar: '' });
+      scrollToBottom();
+    },
+    userLeft: ({ userId }) => {
+      messages.value.push({ message: `User ${userId} left the room`, senderId: 'system', avatar: '' });
+      scrollToBottom();
+    },
+    userReconnected: ({ userId }) => {
+      messages.value.push({ message: `User ${userId} reconnected`, senderId: 'system', avatar: '' });
+      scrollToBottom();
+    }
+  });
 });
 
+onUnmounted(() => {
+  // cleanup chat-specific events (global events like connect/disconnect stay)
+  unregisterEvents(['receiveMessage', 'userJoined', 'userLeft', 'userReconnected']);
+});
 
+// --- Send Message ---
 const sendMessageHandler = () => {
   if (newMessage.value.trim() === '') return;
 

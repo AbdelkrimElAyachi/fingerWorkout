@@ -16,7 +16,9 @@ export async function getPhrases(qunatity, title, language = "eng") {
     const text = data.query.pages[0].extract;
     const words = text.match(/[A-Za-z0-9\u0600-\u06FF]+/g);
 
-    const shuffledWords = shuffleArray(words);
+    let uniqueWords = new Set(words);
+
+    const shuffledWords = shuffleArray([...uniqueWords]);
 
     let phrases = [];
     let i = 0;

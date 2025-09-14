@@ -29,7 +29,6 @@
             <h1 class="text-6xl">{{ calculTestWPM }}</h1>
             <h1 class="text-4xl self-end">WPM</h1>  
             <i class="bi bi-exclamation-circle" title="WPM are calculated using the number of correct words divided by the duration of the test"></i> 
-            <p>{{ authStore.topTestResult }}</p>
           </div> 
           <div class="flex justify-between">
               <p>Word Accuracy </p><p> {{Math.round(( result.correctWords / (result.correctWords + result.wrongWords) ) * 100)}} %</p>

@@ -61,7 +61,7 @@ const authStore = useAuthStore();
                         <button class="link_text" >Profile</button>
                     </RouterLink>
                 </li>
-                <li>
+                <li class="hover:text-primary hover:border-b-4 border-primary">
                     <RouterLink to="/compete">
                         <button class="link_text" >Competition</button>
                     </RouterLink>
