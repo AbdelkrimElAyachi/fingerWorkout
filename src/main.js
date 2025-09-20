@@ -5,6 +5,7 @@ import routes from '@/routes.js';
 import App from '@/App.vue';
 import { clickOutsideElement } from '@/directives/clickOutsideElement.js';
 import { useAuthStore } from '@/stores';
+
 // app store
 import { createPinia } from "pinia";
 const piniaInstance = createPinia();

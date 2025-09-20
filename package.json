@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.12.2",
     "chart.js": "^4.4.9",
     "cloudinary": "^2.6.0",
     "firebase": "^11.6.1",

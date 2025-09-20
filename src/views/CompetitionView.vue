@@ -103,11 +103,12 @@ import { api_url } from '@/globals';
 export default {
   data() {
     return {
-      roomCode: null,
-      roomJoined: false,
-      ttl: null,
       apiUrl: api_url,
+      isGameStarted: false,
+      roomJoined: false,
+      roomCode: null,
       roomUsers : [],
+      ttl: null,
       user: {
           isReady: false,
           index: 0,

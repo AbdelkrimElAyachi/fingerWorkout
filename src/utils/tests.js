@@ -1,30 +1,18 @@
-import { api_url } from "@/globals";
-
+import api from "@/utils/api";
 
 const saveTestResults = (numberCorrectCharacters, numberCorrectWords, numberWrongCharacters, numberWrongWords, duration)=>{
-    const token = localStorage.getItem('auth_token');
-    if(!token){
-        return;
-    }
     try{
         return new Promise(async (resolve, reject) => {
             let now = new Date().toISOString();
-            const res = await fetch(`${api_url}/json/test/save`,{
-                method:'post',
-                headers:{
-                    'Content-Type':'application/json',
-                    'Authorization':`Bearer ${token}`
-                },
-                body:JSON.stringify({
-                    numberCorrectCharacters,
-                    numberCorrectWords,
-                    numberWrongCharacters,
-                    numberWrongWords,
-                    duration,
-                    datetime:now
-                })
+            const res = await api.post('/json/test/save',{
+                numberCorrectCharacters,
+                numberCorrectWords,
+                numberWrongCharacters,
+                numberWrongWords,
+                duration,
+                datetime:now
             });
-            const data = await res.json();
+            const data = await res.data;
             if(!data.success){
                 reject(false);
             }
@@ -39,20 +27,10 @@ const saveTestResults = (numberCorrectCharacters, numberCorrectWords, numberWron
 
 
 const getTestResults = (page, limit) => {
-    const token = localStorage.getItem('auth_token');
-    if(!token){
-        return;
-    }
     try{
         return new Promise(async (resolve, reject) => {
-            const res = await fetch(`${api_url}/json/test/all?page=${page}&limit=${limit}`, {
-                method: 'GET',
-                headers:{
-                    'Content-Type':'application/json',
-                    'Authorization':`Bearer ${token}`
-                }
-            })
-            const data = await res.json();
+            const res = await api.get(`/json/test/all?page=${page}&limit=${limit}`)
+            const data = await res.data;
             if(!data.success){
                 reject(false);
             }
@@ -72,20 +50,10 @@ const getTestResults = (page, limit) => {
 }
 
 const getTopTestResult = () => {
-    const token = localStorage.getItem('auth_token');
-    if(!token){
-        return;
-    }
     try{
         return new Promise(async (resolve, reject) => {
-            const res = await fetch(`${api_url}/json/test/top`, {
-                method: 'GET',
-                headers:{
-                    'Content-Type':'application/json',
-                    'Authorization':`Bearer ${token}`
-                }
-            })
-            const data = await res.json();
+            const res = await api.get('/json/test/top')
+            const data = await res.data;
             if(!data.success){
                 reject(false);
             }

@@ -1,4 +1,4 @@
-import { api_url } from "@/globals";
+import api from "@/utils/api";
 
 function getValidationsMessagesBasedOnFields(data){
     const messages = {};
@@ -12,17 +12,13 @@ function getValidationsMessagesBasedOnFields(data){
 
 const login = async (email, password)=>{
     try{
-        const res = await fetch(`${api_url}/json/login`,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({
-                email: email,
-                password: password
-            })
-        })
-        const data = await res.json();
+        const res = await api.post('/json/login',{
+            email,
+            password,
+        });
+
+        const data = res.data;
+
         if(!data?.success){
             const errors = {};
             if(data?.issues){
@@ -43,18 +39,13 @@ const login = async (email, password)=>{
 
 const register = async (name, email, password)=>{
     try{
-        const res = await fetch(`${api_url}/json/register`,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({
-                name: name,
-                email: email,
-                password: password
-            })
-        })
-        const data = await res.json();
+        const res = await api.post('/json/register',{
+            name: name,
+            email: email,
+            password: password
+        });
+
+        const data = await res.data;
         if(!data?.success){
             const errors = {};
             if(data?.issues){
@@ -73,20 +64,11 @@ const register = async (name, email, password)=>{
 }
 
 export const updateProfile = async(formData)=>{
-    const token = localStorage.getItem('auth_token');
-    if(!token){
-        return false;
-    }
     try{
-        const res = await fetch(`${api_url}/profile/update`,{
-            method:'POST',
-            headers:{
-                // dont set the content-type manuall to multipart/form-data the browser will do it better than you
-                'Authorization':`Bearer ${token}`
-            },
-            body: formData
-        })
-        const data = await res.json();
+        const res = await api.post('/profile/update', formData);
+
+        const data = await res.data;
+
         if(!data?.success){
             const errors = {};
             if(data?.issues){
@@ -107,19 +89,9 @@ export const updateProfile = async(formData)=>{
 
 
 const getUser = async ()=>{
-    const token = localStorage.getItem('auth_token');
-    if(!token){
-        return false;
-    }
     try{
-        const res = await fetch(`${api_url}/json/profile`,{
-            method:'GET',
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization':`Bearer ${token}`
-            }
-        });
-        const data = await res.json();
+        const res = await api.get('/json/profile');
+        const data = await res.data;
         if(!data.success){
             return false;
         }
