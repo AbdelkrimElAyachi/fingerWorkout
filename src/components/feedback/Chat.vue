@@ -2,6 +2,7 @@
   <div>
     <!-- Chat Toggle Button -->
     <button
+      v-if="!isOpen"
       @click="toggleChat"
       class="fixed right-4 bottom-4 z-50 bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-primary-dark transition"
     >

@@ -1,104 +1,40 @@
 <template>
-    <main class="main-container bg-backgroundColor min-h-screen text-textColor">
-        <Header />
+  <main class="main-container bg-backgroundColor min-h-screen text-textColor">
+    <Header />
 
-         <div v-if="roomJoined" class="w-5/6 mx-auto p-10">
-              <!-- Room header -->
-            <div class="flex justify-between items-center mb-4">
-              <h1 class="text-2xl font-bold text-white-800">Room <span class="text-primary">{{ roomCode }}</span></h1>
-              <p>room will be deleted in : {{ ttl }}s</p>
-              <button 
-                @click="leaveRoom" 
-                class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md transition"
-              >
-                Exit
-              </button>
-            </div>
+    <template v-if="isGameStarted">
+        <RaceLine :users="roomUsers" :apiUrl="apiUrl" :totalWords="this.words.length" />
+        <Game :words="words" :index="user.index" :duration="1.5" :user="user" :users="roomUsers" />
+    </template>
 
-            <!-- Connected users -->
-            <div v-if="roomUsers.length" class="flex gap-4 overflow-x-auto py-2">
-              <div v-for="user in roomUsers" :key="user.id" class="flex flex-col items-center" :title="user.id">
-                <div class="relative w-14 h-14 rounded-full p-1 bg-gradient-to-tr from-purple-500 via-pink-500 to-red-400">
-                  <img 
-                    v-if="user.avatar" 
-                    :src="apiUrl+'/uploads/'+user.avatar" 
-                    alt="avatar" 
-                    class="w-full h-full rounded-full border-2 border-white object-cover" 
-                  />
-                  <img 
-                    v-else 
-                    src="/assets/avatar.webp" 
-                    alt="avatar" 
-                    class="w-full h-full rounded-full border-2 border-white object-cover" 
-                  />
-
-                  <!-- Ready indicator -->
-                  <span 
-                    v-if="user.isReady" 
-                    class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-white rounded-full"
-                    title="Ready"
-                  ></span>
-                  <span 
-                    v-else="user.isReady" 
-                    class="absolute bottom-0 right-0 w-4 h-4 bg-gray-500 border-2 border-white rounded-full"
-                    title="Ready"
-                  ></span>
-                </div>
-                <span class="text-xs mt-1 text-gray-600 font-medium">{{ user.id.slice(0, 5) }}...</span>
-              </div>
-            </div>
-
-            <p v-else class="text-gray-400 text-center mt-2">No other users connected yet.</p>
-
-
-            <div v-if="!this.user.isReady" class="flex justify-center items-center mb-4 w-full">
-              <button 
-                @click="markReady" 
-                class="px-4 py-2 bg-primary hover:bg-secondary text-white rounded-full shadow-md transition"
-              >
-                  i'm ready
-              </button>
-            </div>
+    <template v-else>
+        <div v-if="roomJoined" class="w-5/6 mx-auto p-10">
+          <RoomHeader :roomCode="roomCode" :ttl="ttl" @leaveRoom="leaveRoom" />
+          <RoomUsers :users="roomUsers" :apiUrl="apiUrl" />
+          <ReadyButton :user="user" @markReady="markReady" />
         </div>
 
-        <div v-else class="flex flex-col md:flex-row gap-8 w-10/12 mx-auto mt-12">
-          <!-- Join Room -->
-          <div class="flex-1 shadow-lg rounded-lg p-8 flex flex-col items-center">
-            <h2 class="text-2xl font-bold mb-6">Join a Room</h2>
-            <input
-              v-model="roomCode"
-              type="text"
-              placeholder="Enter the room code"
-              class="w-full text-black border border-gray-300 rounded-md px-4 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button @click="joinRoom" class="w-full bg-primary text-white font-semibold py-2 rounded-md hover:bg-primary-dark transition">
-              Enter
-            </button>
-          </div>
-
-          <!-- Create Room -->
-          <div class="flex-1 shadow-lg rounded-lg p-8 flex flex-col items-center">
-            <h2 class="text-2xl font-bold mb-6">Create a Room</h2>
-            <button @click="createRoom" class="w-full bg-primary text-white font-semibold py-2 rounded-md hover:bg-green-600 transition">
-              Create
-            </button>
-          </div>
+        <div v-else>
+          <JoinCreateRoom v-model:roomCode="roomCode" :joinRoom="joinRoom" :createRoom="createRoom" />
         </div>
+    </template>
 
-
-        <!-- Chat Component -->
-        <Chat
-          :currentUserId="this.user.id" 
-          :currentUserAvatar="authStore.picture ? apiUrl+'/uploads/'+authStore.picture : '/assets/avatar.webp'"
-        />
-    </main> 
+    <Chat :currentUserId="user.id" :currentUserAvatar="authStore.picture ? apiUrl+'/uploads/'+authStore.picture : '/assets/avatar.webp'" />
+  </main>
 </template>
 <script>
-import Header from '@/components/layout/Header.vue';
-import Chat from '@/components/feedback/Chat.vue';
 import { connectSocket, emit, registerEvents, unregisterEvents } from '@/services/socketService';
 import { useAuthStore } from '@/stores/authStore';
 import { api_url } from '@/globals';
+import Header from '@/components/layout/Header.vue';
+import Chat from '@/components/feedback/Chat.vue';
+import JoinCreateRoom from '@/components/feedback/JoinCreateRoom.vue';
+import RoomHeader from '@/components/feedback/RoomHeader.vue';
+import RoomUsers from '@/components/feedback/RoomUsers.vue';
+import ReadyButton from '@/components/feedback/ReadyButton.vue';
+import UserAvatar from '@/components/feedback/UserAvatar.vue';
+import Game from '@/components/typing/Game.vue';
+import RaceLine from '@/components/typing/RaceLine.vue';
 
 export default {
   data() {
@@ -107,7 +43,8 @@ export default {
       isGameStarted: false,
       roomJoined: false,
       roomCode: null,
-      roomUsers : [],
+      roomUsers: [],
+      words: [],
       ttl: null,
       user: {
           isReady: false,
@@ -121,7 +58,14 @@ export default {
   },
   components: {
     Header,
-    Chat
+    Chat,
+    JoinCreateRoom,
+    RoomUsers,
+    RoomHeader,
+    ReadyButton,
+    UserAvatar,
+    Game,
+    RaceLine
   },
   computed: {
     authStore() {
@@ -143,74 +87,118 @@ export default {
 
     // Register roomUsersUpdate event
     registerEvents({
-      roomUsersUpdate: (data) => {
-          if (data.roomId !== this.roomCode) {
-              return;
-          }
-          console.log(data.users);
-          data.users.forEach(updatedUser => {
-            const index = this.roomUsers.findIndex(u => u.id === updatedUser.id);
-            console.log(index);
-            if (index !== -1) {
-              // Only update the matching user
-              this.roomUsers[index] = { ...this.roomUsers[index], ...updatedUser };
-            }
-          });
-      },
-      userJoined: ({ userId, avatar }) => {
-          this.roomUsers.push({id:userId, index:0, wrong:0, correct:0, avatar, isReady: false})
-      },
-      userLeft: ({ userId }) => {
-        // remove the user who left
-        this.roomUsers = this.roomUsers.filter(u => u.id !== userId);
+
+      roomUsersUpdate: this.RoomUsersUpdateHandler,
+      userJoined: this.UserJoinedHandler,
+      userLeft: this.UserLeftHandler,
+      gameStarted: ({roomId, words}) => {
+        this.words = words.split('|');
+        this.isGameStarted = true;
       }
     });
     // handle existing room code
     this.getRoomIdIfExisted();
+    this.getGameState();
     setTimeout(()=>{
         this.loadAlreadyExistingUsers();
     }, 1000);
+
   },
   beforeUnmount() {
     // Clean up the listener when component unmounts
     unregisterEvents(['roomUsersUpdate']);
   },
   methods: {
-    loadAlreadyExistingUsers(){
-        if(!this.roomCode){
-            return;
-        }
-        emit('getRoomUsers', this.roomCode, (data) => {
-            if(data.roomId = this.roomCode){
-                console.log(data.users);
-                this.roomUsers = data.users;
+        RoomUsersUpdateHandler(data){
+            if (data.roomId !== this.roomCode) {
+              return;
             }
-        })
-    },
-    getRoomIdIfExisted(){
-        const roomCode = localStorage.getItem('room');
-        if(!roomCode){
-            return false;
-        }
-        emit('checkRoom', roomCode, (res) => {
-            if(!res.success || !res.exists){
-                this.roomCode = null;
-                this.roomJoined = false;
-                localStorage.removeItem('room');
-                return ;
-            }
-            this.roomCode = roomCode;
-            this.roomJoined = true;
-            this.ttl = res.ttl;
-            this.setTtlInterval();
-        })
-    },
 
-    setTtlInterval(){
-      setInterval(() => {
-          this.ttl = this.ttl - 1;
-      }, 1000);
-    },
+            data.users.forEach(updatedUser => {
+              const index = this.roomUsers.findIndex(u => u.id === updatedUser.id);
+              if (index !== -1) {
+                this.roomUsers[index] = { ...this.roomUsers[index], ...updatedUser };
+              }
+              // 🔑 Also update local `this.user` if it's me
+              if (updatedUser.id === this.user.id) {
+                this.user = { ...this.user, ...updatedUser };
+              }
+            });
+        },
+
+        UserJoinedHandler({ userId, avatar }){
+          this.roomUsers.push({id:userId, index:0, wrong:0, correct:0, avatar, isReady: false})
+        },
+
+        UserLeftHandler({ userId }){
+            // remove the user who left
+            this.roomUsers = this.roomUsers.filter(u => u.id !== userId);
+        },
+
+        loadAlreadyExistingUsers(){
+            if(!this.roomCode){
+                return;
+            }
+            emit('getRoomUsers', this.roomCode, (data) => {
+                if(data.roomId === this.roomCode){
+                    this.roomUsers = data.users;
+
+                  // update local user progress
+                  const me = this.roomUsers.find(u => u.id === this.user.id);
+                  if (me) {
+                    this.user = { ...this.user, ...me };
+                  }
+                  console.log(this.user.index);
+                }
+            })
+        },
+
+        getRoomIdIfExisted(){
+            const roomCode = localStorage.getItem('room');
+            if(!roomCode){
+                return false;
+            }
+            emit('checkRoom', roomCode, (res) => {
+                if(!res.success || !res.exists){
+                    this.roomCode = null;
+                    this.roomJoined = false;
+                    localStorage.removeItem('room');
+                    return ;
+                }
+                this.roomCode = roomCode;
+                this.roomJoined = true;
+                this.ttl = res.ttl;
+                this.setTtlInterval();
+            })
+        },
+
+        getGameState(){
+            emit("checkGameState", this.roomCode, (res) => {
+              if (!res.success) {
+                console.error(res.error);
+                return;
+              }
+              
+              if (res.state === "started") {
+                this.words = res.words.split('|');
+                console.log(this.words)
+                this.isGameStarted = true;
+              } else {
+                this.isGameStarted = false;
+              }
+            });
+        },
+
+        setTtlInterval(){
+          setInterval(() => {
+              this.ttl = this.ttl - 1;
+              if(this.ttl<=0){
+                alert("the room duration is finished the room will be deleted now and the all the users kicked out");
+                this.leaveRoom();
+                this.isGameStarted = false;
+              }
+          }, 1000);
+        },
 
     generateRoomCode() {
       return Math.floor(100000 + Math.random() * 900000).toString();
