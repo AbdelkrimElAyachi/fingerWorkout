@@ -2,12 +2,16 @@
   <main class="main-container bg-backgroundColor min-h-screen text-textColor">
     <Header />
 
-    <template v-if="isGameStarted">
-        <RaceLine :users="roomUsers" :apiUrl="apiUrl" :totalWords="this.words.length" />
+    <div v-if="gameState=='started'" class="w-5/6 mx-auto p-10">
+        <RaceLine :users="roomUsers" :apiUrl="apiUrl" :totalWords="words.length" :ttl="ttl"/>
         <Game :words="words" :index="user.index" :duration="1.5" :user="user" :users="roomUsers" />
-    </template>
+    </div>
 
-    <template v-else>
+    <div v-if="gameState=='finished'">
+        <GamePopup :result="user" :users="roomUsers" :duration="1.5" @close-results="onGamePopupClose"/>
+    </div>
+
+    <template v-if="gameState=='idle'">
         <div v-if="roomJoined" class="w-5/6 mx-auto p-10">
           <RoomHeader :roomCode="roomCode" :ttl="ttl" @leaveRoom="leaveRoom" />
           <RoomUsers :users="roomUsers" :apiUrl="apiUrl" />
@@ -35,12 +39,13 @@ import ReadyButton from '@/components/feedback/ReadyButton.vue';
 import UserAvatar from '@/components/feedback/UserAvatar.vue';
 import Game from '@/components/typing/Game.vue';
 import RaceLine from '@/components/typing/RaceLine.vue';
+import GamePopup from '@/components/feedback/GamePopup.vue';
 
 export default {
   data() {
     return {
       apiUrl: api_url,
-      isGameStarted: false,
+      gameState : "idle",
       roomJoined: false,
       roomCode: null,
       roomUsers: [],
@@ -65,13 +70,29 @@ export default {
     ReadyButton,
     UserAvatar,
     Game,
-    RaceLine
+    RaceLine,
+    GamePopup
   },
   computed: {
     authStore() {
       return useAuthStore();
     }
   },
+
+  watch: {
+    gameState(newVal) {
+        if (newVal === 'started') {
+          // Only set if it doesn't already exist
+          if (!localStorage.getItem('gameStartTimestamp')) {
+            const now = Date.now();
+            localStorage.setItem('gameStartTimestamp', now.toString());
+          }
+        } else {
+          localStorage.removeItem('gameStartTimestamp');
+        }
+    }
+  },
+
   created() {
     if (!this.authStore.isAuthenticated) {
       this.$router.push('/login');
@@ -91,9 +112,11 @@ export default {
       roomUsersUpdate: this.RoomUsersUpdateHandler,
       userJoined: this.UserJoinedHandler,
       userLeft: this.UserLeftHandler,
-      gameStarted: ({roomId, words}) => {
-        this.words = words.split('|');
-        this.isGameStarted = true;
+      gameStateUpdate: ({roomId, state, words}) => {
+        this.gameState = state;
+        if(this.words){
+            this.words = words.split('|');
+        }
       }
     });
     // handle existing room code
@@ -124,6 +147,10 @@ export default {
                 this.user = { ...this.user, ...updatedUser };
               }
             });
+        },
+
+        onGamePopupClose() {
+            this.gameState = 'idle';
         },
 
         UserJoinedHandler({ userId, avatar }){
@@ -179,23 +206,25 @@ export default {
                 return;
               }
               
-              if (res.state === "started") {
-                this.words = res.words.split('|');
-                console.log(this.words)
-                this.isGameStarted = true;
-              } else {
-                this.isGameStarted = false;
-              }
+            console.log(res.state);
+            this.gameState = res.state;
+            this.words = res.words.split('|');
+
             });
         },
 
         setTtlInterval(){
-          setInterval(() => {
+          if (this.ttlInterval) {
+            clearInterval(this.ttlInterval); // prevent duplicates
+          }
+
+          this.ttlInterval = setInterval(() => {
               this.ttl = this.ttl - 1;
               if(this.ttl<=0){
+                clearInterval(this.ttlInterval);
                 alert("the room duration is finished the room will be deleted now and the all the users kicked out");
+                this.gameState = "idle";
                 this.leaveRoom();
-                this.isGameStarted = false;
               }
           }, 1000);
         },
@@ -206,6 +235,8 @@ export default {
 
     markReady(){
         if (!this.roomJoined) return;
+        // remove the previous game start timer
+        localStorage.removeItem('gameStartTimestamp');
 
         // emit the 'userReady' event to the server
         emit('userReady', null, (res) => {
@@ -270,6 +301,7 @@ export default {
         console.log('leaving room:', res.roomId);
         localStorage.removeItem('room');
         this.roomJoined = false;
+        this.roomCode = null;
       });
     }
   }

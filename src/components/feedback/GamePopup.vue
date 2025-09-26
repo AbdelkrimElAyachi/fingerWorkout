@@ -16,10 +16,6 @@
       </div>
 
       <div class="flex flex-col gap-6 w-96 p-6">
-        <p class="self-center text-xl text-primary" v-if="authStore.isAuthenticated && authStore.topTestResult < calculTestWPM">
-          Congratulation New Record
-        </p>
-
         <div class="flex justify-center items-center gap-4 text-primary">
           <h1 class="text-6xl">{{ calculTestWPM }}</h1>
           <h1 class="text-4xl self-end">WPM</h1>  
@@ -28,12 +24,12 @@
 
         <div class="flex justify-between">
           <p>Word Accuracy</p>
-          <p>{{ Math.round((result.correctWords / (result.correctWords + result.wrongWords)) * 100) }} %</p>
+          <p>{{ Math.round((result.correct/ (result.correct+ result.wrong)) * 100) }} %</p>
         </div>
 
         <div class="flex gap-2 self-center">
           <i class="bi bi-hourglass-bottom"></i>
-          <p>{{ result.duration }} Minute(s)</p>
+          <p>{{ duration }} Minute(s)</p>
         </div>
 
         <!-- Users leaderboard -->
@@ -46,7 +42,7 @@
               class="flex justify-between py-1 px-2 border-b border-gray-200"
             >
               <span>{{ user.id }}</span>
-              <span>{{ user.correctWords }} W</span>
+              <span>{{ Math.round(user.correct / this.duration) }} WPM</span>
             </li>
           </ul>
         </div>
@@ -71,6 +67,7 @@ export default {
   name: "Popup",
   props: {
     result: { type: Object, required: true },
+    duration: { type: Number, required: true },
     users: { type: Array, default: () => [] } // <-- added users prop
   },
   data() {
@@ -81,11 +78,11 @@ export default {
   },
   computed: {
     calculTestWPM() {
-      if (!this.result.correctWords || !this.result.duration) return 1;
-      return Math.round(this.result.correctWords / this.result.duration);
+      if (!this.result.correct|| !this.duration) return 0;
+      return Math.round(this.result.correct / this.duration);
     },
     sortedUsers() {
-      return [...this.users].sort((a, b) => (b.correctWords || 0) - (a.correctWords || 0));
+      return [...this.users].sort((a, b) => (b.correct || 0) - (a.correct || 0));
     }
   },
   components: { Doughnut },
@@ -100,7 +97,7 @@ export default {
         datasets: [
           {
             labels: 'Word Accuracy',
-            data: [this.result.wrongWords, this.result.correctWords],
+            data: [this.result.wrong, this.result.correct],
             backgroundColor: ['red', 'blue'],
             hoverOffset: 4
           }

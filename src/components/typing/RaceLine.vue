@@ -1,11 +1,24 @@
 <template>
-  <div class="relative w-full max-w-4xl mx-auto h-16 bg-BackgroundColor rounded-lg shadow-md overflow-hidden">
+  <div class="relative w-full mx-auto h-16 bg-BackgroundColor rounded-lg shadow-md">
     <!-- Track -->
     <div class="absolute top-1/2 left-0 w-full h-2 bg-primary -translate-y-1/2 rounded"></div>
 
     <!-- Finish line -->
     <div class="absolute top-0 right-0 w-1 h-full bg-white"></div>
 
+    <!-- Timer -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full mb-2">
+      <span 
+        :key="ttl" 
+        :class="[
+          'text-lg font-bold px-3 py-1 rounded-lg shadow-md transition-all',
+          ttl <= 10 ? 'bg-red-500 text-white animate-pop' : 'bg-gray-800 text-white'
+        ]"
+      >
+        {{ ttl }}s
+      </span>
+    </div>
+    
     <!-- Users -->
     <div
       v-for="user in users"
@@ -36,7 +49,8 @@ export default {
       type: Number,
       required: true
     },
-    apiUrl: String
+    apiUrl: String,
+    ttl: Number 
   },
   computed: {
     leaderIndex() {

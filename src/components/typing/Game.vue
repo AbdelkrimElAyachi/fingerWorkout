@@ -1,6 +1,6 @@
 <!-- Your main component (e.g., TypingTest.vue) -->
 <template>
-    <div class="mt-16 mx-auto text-secondary w-fit">
+    <div class="mt-6 mx-auto text-secondary w-fit">
       <Timer 
         :timeLeft="timeLeft"
       />
@@ -20,12 +20,11 @@ import { connectSocket, emit, registerEvents, unregisterEvents } from '@/service
 import Timer from '@/components/base/Timer.vue'
 import RealTimeDisplayer from '@/components/typing/RealTimeDisplayer.vue'
 import TypingArea from '@/components/typing/TypingArea.vue'
-import GamePopup from '@/components/feedback/GamePopup.vue'
 import { useSoundStore, useParameterStore } from "@/stores"
 import { saveTestResults } from '@/utils/tests'
 
 export default {
-    components: { Timer, RealTimeDisplayer, TypingArea, GamePopup },
+    components: { Timer, RealTimeDisplayer, TypingArea},
     props: {
         users: { type: Array, required: true },
         words: { type: Array, required: true },
@@ -66,7 +65,16 @@ export default {
         connectSocket(this.user.id);
         document.addEventListener("keydown", this.buttonClicked);
         this.results.duration = this.duration;
-        this.timeLeft = this.duration * 60;
+
+        // Calculate timeLeft based on saved timestamp
+        const startTs = parseInt(localStorage.getItem('gameStartTimestamp'));
+        if(startTs) {
+            const elapsed = Math.floor((Date.now() - startTs) / 1000);
+            const totalTime = this.duration * 60;
+            this.timeLeft = Math.max(totalTime - elapsed, 0);
+        } else {
+            this.timeLeft = this.duration * 60;
+        }
         this.wordIndex = this.index;
         console.log(this.index);
         this.generatePhraseText();
